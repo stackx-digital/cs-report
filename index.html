@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS Report System — NGO</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--navy:#0f1f3d;--navy-mid:#1a3260;--blue:#2557a7;--accent:#e8a020;--accent-light:#fdf3e0;--green:#1a7a4a;--green-light:#e6f7ee;--red:#c0392b;--red-light:#fdecea;--bg:#f4f6fb;--surface:#fff;--border:#dde3f0;--text:#1a2540;--text-secondary:#5a6a8a;--text-muted:#8a97b0;--radius:12px;--shadow:0 2px 16px rgba(15,31,61,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.app-header{background:var(--navy);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-family:'DM Serif Display',serif;font-size:18px;color:#fff}
+.logo-sub{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em}
+.conn-badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.conn-ok{background:#e6f7ee;color:#1a7a4a}.conn-err{background:#fdecea;color:#c0392b}.conn-loading{background:#fdf3e0;color:#b07800}
+.tab-bar{background:var(--navy-mid);display:flex;padding:0 28px;gap:4px}
+.tab-btn{padding:10px 20px;font-size:13px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:.2s;font-family:'Outfit',sans-serif}
+.tab-btn.active{color:#fff;border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:rgba(255,255,255,.8)}
+.container{max-width:780px;margin:0 auto;padding:28px 20px 80px}
+.page-title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy);margin-bottom:3px}
+.page-sub{font-size:13px;color:var(--text-secondary);margin-bottom:24px}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
+.card-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#fafbfd}
+.card-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.card-title{font-size:14px;font-weight:600;color:var(--navy)}
+.card-body{padding:16px 18px}
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field-group{display:flex;flex-direction:column;gap:4px}
+label{font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em}
+input[type=text],input[type=date],input[type=password],input[type=url],select,textarea{padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--text);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,87,167,.1)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.summary-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
+.summary-num{font-family:'DM Serif Display',serif;font-size:30px;color:var(--navy);line-height:1}
+.summary-num.green{color:var(--green)}.summary-num.amber{color:var(--accent)}
+.summary-label{font-size:10px;color:var(--text-secondary);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.ch-table{width:100%;border-collapse:collapse}
+.ch-table thead tr{background:var(--navy)}
+.ch-table th{padding:9px 12px;font-size:10px;font-weight:600;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.06em;text-align:left}
+.ch-table th:not(:first-child){text-align:center}
+.ch-table tbody tr{border-bottom:1px solid var(--border)}
+.ch-table tbody tr:hover{background:#f8f9fc}
+.ch-table td{padding:11px 12px;font-size:13px}
+.ch-table td:not(:first-child){text-align:center}
+.ch-label{display:flex;align-items:center;gap:8px}
+.ch-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ch-name{font-weight:500;font-size:12px}.ch-type{font-size:10px;color:var(--text-muted)}
+.num-input{width:64px!important;text-align:center;font-family:'DM Mono',monospace;font-size:14px;font-weight:500;padding:6px!important}
+.rate-badge{font-family:'DM Mono',monospace;font-size:12px;font-weight:600;padding:3px 9px;border-radius:20px;display:inline-block;min-width:48px;text-align:center}
+.rh{background:var(--green-light);color:var(--green)}.rm{background:var(--accent-light);color:#b07800}.rl{background:var(--red-light);color:var(--red)}.rn{background:#f0f2f5;color:var(--text-muted)}
+.total-row td{background:#f0f4ff!important;font-weight:600;font-family:'DM Mono',monospace;border-top:2px solid var(--blue)!important}
+.btn-row{display:flex;gap:8px;margin-top:6px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+.btn-primary{background:var(--navy);color:#fff;flex:1;justify-content:center}
+.btn-primary:hover{background:var(--navy-mid);transform:translateY(-1px);box-shadow:0 4px 12px rgba(15,31,61,.25)}
+.btn-secondary{background:#fff;color:var(--text);border:1.5px solid var(--border)}
+.btn-secondary:hover{background:var(--bg)}
+.btn-accent{background:var(--accent);color:var(--navy);flex:1;justify-content:center;font-weight:600}
+.btn-accent:hover{background:#d49018;transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important}
+.hist-table{width:100%;border-collapse:collapse;font-size:12px}
+.hist-table th{padding:8px 10px;background:var(--navy);color:rgba(255,255,255,.7);font-size:10px;text-transform:uppercase;letter-spacing:.05em;text-align:left}
+.hist-table td{padding:9px 10px;border-bottom:1px solid var(--border)}
+.hist-table tr:hover td{background:#f8f9fc}
+.hist-table tr:last-child td{border-bottom:none}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:2px 6px;border-radius:4px}
+.del-btn:hover{color:var(--red);background:var(--red-light)}
+.agg-table{width:100%;border-collapse:collapse;font-size:12px}
+.agg-table th{padding:8px 10px;background:var(--navy);color:rgba(255,255,255,.7);font-size:10px;text-transform:uppercase;letter-spacing:.05em;text-align:left}
+.agg-table th:not(:first-child){text-align:center}
+.agg-table td{padding:9px 10px;border-bottom:1px solid var(--border);text-align:center}
+.agg-table td:first-child{text-align:left}
+.agg-table tr:last-child td{background:#f0f4ff;font-weight:600;border-top:2px solid var(--blue);border-bottom:none;font-family:'DM Mono',monospace}
+.agg-table tbody tr:nth-child(even) td{background:#fafbfd}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
+.empty-icon{font-size:36px;margin-bottom:10px}.empty-text{font-size:14px}
+.info-box{background:#eef4ff;border:1px solid #c7d9f5;border-radius:8px;padding:10px 14px;font-size:12px;color:#2557a7;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start}
+.warn-box{background:#fff8e6;border:1px solid #fce096;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:12px}
+.setup-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.setup-step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px}
+.step-body{flex:1}
+.step-title{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.code-block{background:#1e2a3a;color:#a8d8a8;font-family:'DM Mono',monospace;font-size:12px;padding:10px 14px;border-radius:8px;margin-top:8px;word-break:break-all;position:relative}
+.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer}
+.copy-btn:hover{background:rgba(255,255,255,.2)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;font-weight:500;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(15,31,61,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+#pdf-out{display:none;font-family:'Outfit',Arial,sans-serif;background:#fff;width:794px;padding:0;box-sizing:border-box}
+.ph{background:#0f1f3d;padding:24px 32px 20px;color:#fff}
+.ph-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.ph-org{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.ph-title{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:#fff}
+.ph-badge{background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;align-self:flex-start}
+.ph-meta{display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.55);flex-wrap:wrap}
+.ph-meta span{color:#fff;font-weight:500}
+.pb{padding:24px 32px}
+.psect{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #e5e8f0}
+.psum{display:flex;gap:10px;margin-bottom:20px}
+.psb{flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center}
+.psn{font-family:'DM Serif Display',serif;font-size:26px;color:#0f1f3d;line-height:1}
+.psn.g{color:#1a7a4a}.psn.a{color:#b07800}
+.psl{font-size:9px;color:#5a6a8a;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.ptable{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:11px}
+.ptable thead tr{background:#0f1f3d}
+.ptable th{padding:8px 10px;color:rgba(255,255,255,.7);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left}
+.ptable th:not(:first-child){text-align:center}
+.ptable td{padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:center}
+.ptable td:first-child{text-align:left}
+.ptable tbody tr:last-child td{background:#f0f4ff;font-weight:700;border-top:1.5px solid #2557a7;border-bottom:none}
+.pr{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
+.pr.h{background:#e6f7ee;color:#1a7a4a}.pr.m{background:#fdf3e0;color:#b07800}.pr.l{background:#fdecea;color:#c0392b}.pr.n{background:#f0f2f5;color:#8a97b0}
+.pnote{border:1px solid #dde3f0;border-radius:7px;padding:12px 14px;min-height:50px;font-size:12px;color:#1a2540;line-height:1.6;white-space:pre-wrap}
+.pfoot{margin-top:24px;padding-top:12px;border-top:1px solid #e5e8f0;display:flex;justify-content:space-between;font-size:9px;color:#8a97b0}
+.pdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.pdays-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:10px}
+.pdays-table th{padding:6px 8px;background:#1a3260;color:rgba(255,255,255,.7);font-size:9px;text-transform:uppercase;letter-spacing:.04em;text-align:left}
+.pdays-table th:not(:first-child){text-align:center}
+.pdays-table td{padding:7px 8px;border-bottom:1px solid #edf0f7;text-align:center}
+.pdays-table td:first-child{text-align:left}
+.pdays-table tbody tr:nth-child(even) td{background:#fafbfd}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-mark">📋</div>
+    <div>
+      <div class="logo-text">CS Report System</div>
+      <div class="logo-sub">Customer Service NGO</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="conn-badge conn-loading" id="conn-badge">⏳ Connecting...</span>
+    <span style="font-size:11px;color:rgba(255,255,255,.4);font-family:'DM Mono',monospace" id="hdr-date"></span>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('daily',this)">📅 Harian</button>
+  <button class="tab-btn" onclick="switchTab('weekly',this)">📆 Mingguan</button>
+  <button class="tab-btn" onclick="switchTab('monthly',this)">🗓️ Bulanan</button>
+  <button class="tab-btn" onclick="switchTab('history',this)">🗃️ Rekod</button>
+  <button class="tab-btn" onclick="switchTab('setup',this)">⚙️ Setup</button>
+</div>
+
+<div class="container">
+
+<!-- ══════ DAILY ══════ -->
+<div class="panel active" id="panel-daily">
+  <div class="page-title">Laporan Harian</div>
+  <p class="page-sub">Isi data hari ini dan simpan ke sistem.</p>
+  <div class="summary-row">
+    <div class="summary-box"><div class="summary-num" id="d-tot">0</div><div class="summary-label">Jumlah Masuk</div></div>
+    <div class="summary-box"><div class="summary-num green" id="d-eng">0</div><div class="summary-label">Berjaya Engage</div></div>
+    <div class="summary-box"><div class="summary-num amber" id="d-rate">—</div><div class="summary-label">Engage Rate</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#eef2ff">🗂️</div><div class="card-title">Maklumat Laporan</div></div>
+    <div class="card-body">
+      <div class="meta-grid">
+        <div class="field-group"><label>Tarikh</label><input type="date" id="d-date"></div>
+        <div class="field-group"><label>Nama Staf CS</label><input type="text" id="d-name" placeholder="Nama penuh"></div>
+        <div class="field-group"><label>Shift</label>
+          <select id="d-shift">
+            <option>Pagi (8:30am – 1:00pm)</option>
+            <option>Petang (1:00pm – 5:30pm)</option>
+            <option selected>Penuh (8:30am – 5:30pm)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📊</div><div class="card-title">Data Per Saluran</div></div>
+    <table class="ch-table">
+      <thead><tr><th>Saluran</th><th>Masuk</th><th>Engaged</th><th>Rate</th></tr></thead>
+      <tbody id="d-tbody">
+        <tr data-ch="wa1"><td><div class="ch-label"><div class="ch-dot" style="background:#3b82f6"></div><div><div class="ch-name">WhatsApp 1</div><div class="ch-type">Pertanyaan Umum</div></div></div></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><span class="rate-badge rn">—</span></td></tr>
+        <tr data-ch="wa2"><td><div class="ch-label"><div class="ch-dot" style="background:#f59e0b"></div><div><div class="ch-name">WhatsApp 2</div><div class="ch-type">Aduan & Sokongan</div></div></div></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><span class="rate-badge rn">—</span></td></tr>
+        <tr data-ch="wa3"><td><div class="ch-label"><div class="ch-dot" style="background:#22c55e"></div><div><div class="ch-name">WhatsApp 3</div><div class="ch-type">Program & Pendaftaran</div></div></div></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><span class="rate-badge rn">—</span></td></tr>
+        <tr data-ch="em1"><td><div class="ch-label"><div class="ch-dot" style="background:#a855f7"></div><div><div class="ch-name">Email 1</div><div class="ch-type">Rasmi & Surat-menyurat</div></div></div></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><span class="rate-badge rn">—</span></td></tr>
+        <tr data-ch="em2"><td><div class="ch-label"><div class="ch-dot" style="background:#ec4899"></div><div><div class="ch-name">Email 2</div><div class="ch-type">Laporan & Maklumbalas</div></div></div></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><input class="num-input" type="number" min="0" value="0" oninput="dRecalc()"></td><td><span class="rate-badge rn">—</span></td></tr>
+        <tr class="total-row"><td><strong>JUMLAH</strong></td><td id="d-totM">0</td><td id="d-totE">0</td><td><span class="rate-badge rn" id="d-totR">—</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#fff7ed">📝</div><div class="card-title">Catatan (Pilihan)</div></div>
+    <div class="card-body"><div class="field-group"><label>Isu atau perkara penting hari ini</label><textarea id="d-notes" placeholder="cth: WA2 ada 2 aduan mengenai kelewatan resit..."></textarea></div></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="dReset()">↺ Set Semula</button>
+    <button class="btn btn-secondary" id="btn-save-pdf" onclick="dSaveAndPDF()">💾 Simpan & PDF</button>
+    <button class="btn btn-primary" onclick="dPDFonly()">⬇ PDF Sahaja</button>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button onclick="showWA('daily')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#25D366;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy untuk WhatsApp</button>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button onclick="showWA('weekly')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#128C7E;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy Mingguan (WA)</button>
+    <button onclick="showWA('monthly')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#075E54;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy Bulanan (WA)</button>
+  </div>
+</div>
+
+<!-- WA MODAL -->
+<div id="wa-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column">
+    <div style="background:#25D366;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">📲</span>
+        <div>
+          <div style="font-weight:600;color:#fff;font-size:15px">Format WhatsApp</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8)" id="wa-subtitle">—</div>
+        </div>
+      </div>
+      <button onclick="closeWA()" style="background:rgba(255,255,255,.25);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1">✕</button>
+    </div>
+    <div style="padding:14px 16px;flex:1;overflow-y:auto">
+      <div style="background:#dcf8c6;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #b8e0a0">
+        <pre id="wa-preview" style="font-family:Outfit,sans-serif;font-size:13px;color:#1a2540;white-space:pre-wrap;line-height:1.75;margin:0"></pre>
+      </div>
+      <div style="font-size:12px;color:#5a6a8a">Teks format <strong>*bold*</strong> WhatsApp. Terus paste dalam chat.</div>
+    </div>
+    <div style="padding:12px 16px;border-top:1px solid #e5e8f0;display:flex;gap:8px;flex-shrink:0">
+      <button onclick="closeWA()" style="flex:1;padding:9px;border-radius:8px;border:1.5px solid #dde3f0;background:#fff;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Tutup</button>
+      <button id="wa-copy-btn" onclick="copyWA()" style="flex:2;padding:9px;border-radius:8px;border:none;background:#25D366;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copy Teks</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ WEEKLY ══════ -->
+<div class="panel" id="panel-weekly">
+  <div class="page-title">Laporan Mingguan</div>
+  <p class="page-sub">Aggregat automatik dari data harian yang disimpan.</p>
+  <div class="info-box">ℹ️ Data dikira dari entri harian semua staf untuk tempoh yang dipilih.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#eef2ff">📆</div><div class="card-title">Pilih Minggu</div></div>
+    <div class="card-body">
+      <div class="meta-grid">
+        <div class="field-group"><label>Tarikh Mula</label><input type="date" id="w-from" onchange="wLoad()"></div>
+        <div class="field-group"><label>Tarikh Akhir</label><input type="date" id="w-to" onchange="wLoad()"></div>
+        <div class="field-group"><label>Disediakan Oleh</label><input type="text" id="w-preparer" placeholder="Nama pengurus"></div>
+      </div>
+    </div>
+  </div>
+  <div id="w-loading" style="display:none;text-align:center;padding:20px;color:var(--text-secondary);font-size:13px"><span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Memuatkan data...</div>
+  <div id="w-result" style="display:none">
+    <div class="summary-row">
+      <div class="summary-box"><div class="summary-num" id="w-tot">0</div><div class="summary-label">Jumlah Masuk</div></div>
+      <div class="summary-box"><div class="summary-num green" id="w-eng">0</div><div class="summary-label">Berjaya Engage</div></div>
+      <div class="summary-box"><div class="summary-num amber" id="w-rate">—</div><div class="summary-label">Engage Rate</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📊</div><div class="card-title">Aggregat Per Saluran</div></div>
+      <table class="agg-table"><thead><tr><th>Saluran</th><th>Masuk</th><th>Engaged</th><th>Tidak Engage</th><th>Rate</th></tr></thead><tbody id="w-agg-body"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#fff7ed">📅</div><div class="card-title">Pecahan Harian</div></div>
+      <table class="hist-table"><thead><tr><th>Tarikh</th><th>Staf</th><th>Masuk</th><th>Engaged</th><th>Rate</th><th>Catatan</th></tr></thead><tbody id="w-days-body"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#eef2ff">📝</div><div class="card-title">Catatan Mingguan</div></div>
+      <div class="card-body"><div class="field-group"><label>Rumusan</label><textarea id="w-notes" placeholder="cth: Minggu ini engage rate meningkat 5%..."></textarea></div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-accent" onclick="wPDF()">⬇ Jana PDF Mingguan</button>
+      <button onclick="showWA('weekly')" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#128C7E;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 WA</button>
+    </div>
+  </div>
+  <div id="w-empty" class="empty-state"><div class="empty-icon">📆</div><div class="empty-text">Pilih tarikh untuk muat data</div></div>
+</div>
+
+<!-- ══════ MONTHLY ══════ -->
+<div class="panel" id="panel-monthly">
+  <div class="page-title">Laporan Bulanan</div>
+  <p class="page-sub">Aggregat automatik untuk satu bulan penuh.</p>
+  <div class="info-box">ℹ️ Data dikira dari semua entri harian bulan yang dipilih.</div>
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#eef2ff">🗓️</div><div class="card-title">Pilih Bulan</div></div>
+    <div class="card-body">
+      <div class="meta-grid">
+        <div class="field-group"><label>Bulan & Tahun</label><input type="month" id="m-month" onchange="mLoad()"></div>
+        <div class="field-group"><label>Disediakan Oleh</label><input type="text" id="m-preparer" placeholder="Nama pengurus"></div>
+      </div>
+    </div>
+  </div>
+  <div id="m-loading" style="display:none;text-align:center;padding:20px;color:var(--text-secondary);font-size:13px"><span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Memuatkan data...</div>
+  <div id="m-result" style="display:none">
+    <div class="summary-row">
+      <div class="summary-box"><div class="summary-num" id="m-tot">0</div><div class="summary-label">Jumlah Masuk</div></div>
+      <div class="summary-box"><div class="summary-num green" id="m-eng">0</div><div class="summary-label">Berjaya Engage</div></div>
+      <div class="summary-box"><div class="summary-num amber" id="m-rate">—</div><div class="summary-label">Engage Rate</div></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📊</div><div class="card-title">Aggregat Per Saluran</div></div>
+      <table class="agg-table"><thead><tr><th>Saluran</th><th>Masuk</th><th>Engaged</th><th>Tidak Engage</th><th>Rate</th><th>Hari</th></tr></thead><tbody id="m-agg-body"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#fff7ed">📅</div><div class="card-title">Ringkasan Harian</div></div>
+      <table class="hist-table"><thead><tr><th>Tarikh</th><th>Staf</th><th>Masuk</th><th>Engaged</th><th>Rate</th></tr></thead><tbody id="m-days-body"></tbody></table>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-icon" style="background:#eef2ff">📝</div><div class="card-title">Catatan Bulanan</div></div>
+      <div class="card-body"><div class="field-group"><label>Rumusan</label><textarea id="m-notes" placeholder="cth: Bulan ini jumlah pertanyaan meningkat 20%..."></textarea></div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-accent" onclick="mPDF()">⬇ Jana PDF Bulanan</button>
+      <button onclick="showWA('monthly')" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#075E54;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 WA</button>
+    </div>
+  </div>
+  <div id="m-empty" class="empty-state"><div class="empty-icon">🗓️</div><div class="empty-text">Pilih bulan untuk muat data</div></div>
+</div>
+
+<!-- ══════ HISTORY ══════ -->
+<div class="panel" id="panel-history">
+  <div class="page-title">Rekod Harian</div>
+  <p class="page-sub">Semua laporan harian dari semua staf.</p>
+  <div class="btn-row" style="margin-bottom:14px">
+    <button class="btn btn-secondary" onclick="exportCSV()">📤 Export CSV</button>
+    <button class="btn btn-secondary" id="btn-refresh-hist" onclick="renderHistory()">🔄 Refresh</button>
+  </div>
+  <div id="hist-loading" style="display:none;text-align:center;padding:20px;color:var(--text-secondary);font-size:13px"><span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Memuatkan rekod...</div>
+  <div class="card" id="hist-card">
+    <table class="hist-table">
+      <thead><tr><th>Tarikh</th><th>Staf</th><th>Shift</th><th>Masuk</th><th>Engaged</th><th>Rate</th><th>Catatan</th><th></th></tr></thead>
+      <tbody id="hist-body"></tbody>
+    </table>
+  </div>
+  <div id="hist-empty" class="empty-state" style="display:none"><div class="empty-icon">🗃️</div><div class="empty-text">Tiada rekod lagi.</div></div>
+</div>
+
+<!-- ══════ SETUP ══════ -->
+<div class="panel" id="panel-setup">
+  <div class="page-title">Setup Supabase</div>
+  <p class="page-sub">Sambungkan webapp ke database Supabase supaya semua staf kongsi data yang sama.</p>
+
+  <div class="warn-box">⚠️ <strong>Lakukan setup ini sekali sahaja</strong> oleh admin/pengurus. Selepas disimpan, semua staf boleh guna tanpa setup semula.</div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#eef2ff">🔑</div><div class="card-title">Masukkan Credentials Supabase</div></div>
+    <div class="card-body">
+      <div class="field-group" style="margin-bottom:10px">
+        <label>Supabase URL</label>
+        <input type="url" id="cfg-url" placeholder="https://xxxxxxxxxxxx.supabase.co">
+      </div>
+      <div class="field-group" style="margin-bottom:10px">
+        <label>Supabase Anon Key</label>
+        <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="saveConfig()">💾 Simpan & Test Sambungan</button>
+        <button class="btn btn-secondary" onclick="clearConfig()">🗑️ Padam Config</button>
+      </div>
+      <div id="test-result" style="margin-top:10px;font-size:13px;display:none"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📋</div><div class="card-title">Panduan Setup Langkah Demi Langkah</div></div>
+    <div class="card-body">
+
+      <div class="setup-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Buat akaun Supabase (percuma)</div>
+          <div class="step-desc">Pergi ke <strong>supabase.com</strong> → klik <strong>Start your project</strong> → daftar dengan Google atau email. Akaun percuma sudah cukup (500MB).</div>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Buat projek baru</div>
+          <div class="step-desc">Klik <strong>New Project</strong> → pilih nama (contoh: <em>cs-ngo-report</em>) → set password database → pilih region <strong>Southeast Asia (Singapore)</strong> → klik <strong>Create new project</strong>. Tunggu 1-2 minit.</div>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Buat table dalam database</div>
+          <div class="step-desc">Di dashboard Supabase → klik <strong>SQL Editor</strong> (ikon terminal) → klik <strong>New query</strong> → copy-paste SQL di bawah → klik <strong>Run</strong>.</div>
+          <div class="code-block" id="sql-block">CREATE TABLE cs_daily_reports (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  report_date date NOT NULL,
+  staff_name text NOT NULL,
+  shift text,
+  wa1_masuk int DEFAULT 0,
+  wa1_engaged int DEFAULT 0,
+  wa2_masuk int DEFAULT 0,
+  wa2_engaged int DEFAULT 0,
+  wa3_masuk int DEFAULT 0,
+  wa3_engaged int DEFAULT 0,
+  em1_masuk int DEFAULT 0,
+  em1_engaged int DEFAULT 0,
+  em2_masuk int DEFAULT 0,
+  em2_engaged int DEFAULT 0,
+  notes text,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE cs_daily_reports ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow all" ON cs_daily_reports
+  FOR ALL USING (true) WITH CHECK (true);</div>
+          <button class="btn btn-secondary" style="margin-top:8px;font-size:12px" onclick="copySQL()">📋 Copy SQL</button>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Dapatkan URL dan API Key</div>
+          <div class="step-desc">Di dashboard Supabase → klik <strong>Project Settings</strong> (gear icon) → klik <strong>API</strong> → copy dua nilai:<br><br>
+          • <strong>Project URL</strong> — contoh: <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">https://abcdefgh.supabase.co</code><br>
+          • <strong>anon public</strong> key — bermula dengan <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">eyJ...</code></div>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Masukkan credentials di atas</div>
+          <div class="step-desc">Paste URL dan Key dalam borang di atas → klik <strong>Simpan & Test Sambungan</strong>. Kalau berjaya, badge header akan tukar kepada hijau ✅.</div>
+        </div>
+      </div>
+
+      <div class="setup-step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Deploy ke Cloudflare Pages</div>
+          <div class="step-desc">
+          1. Pergi ke <strong>pages.cloudflare.com</strong> → Log in / daftar percuma<br>
+          2. Klik <strong>Create a project</strong> → pilih <strong>Direct Upload</strong><br>
+          3. Nama projek: <em>cs-ngo-report</em> → klik <strong>Create project</strong><br>
+          4. Upload fail <strong>cs-report-v2.html</strong> → rename jadi <strong>index.html</strong> sebelum upload<br>
+          5. Klik <strong>Deploy site</strong><br>
+          6. URL anda akan jadi: <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">cs-ngo-report.pages.dev</code><br><br>
+          <strong>Nota penting:</strong> Credentials Supabase disimpan dalam localStorage setiap browser. Staf perlu buka Setup tab dan masukkan credentials sekali pada device masing-masing.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- PDF OUTPUT -->
+<div id="pdf-out">
+  <div class="ph">
+    <div class="ph-top"><div><div class="ph-org">[NAMA NGO] — Customer Service Division</div><div class="ph-title" id="po-title"></div></div><div class="ph-badge" id="po-badge"></div></div>
+    <div class="ph-meta" id="po-meta"></div>
+  </div>
+  <div class="pb">
+    <div class="psect">Ringkasan Keseluruhan</div>
+    <div class="psum">
+      <div class="psb"><div class="psn" id="po-tot"></div><div class="psl">Jumlah Masuk</div></div>
+      <div class="psb"><div class="psn g" id="po-eng"></div><div class="psl">Berjaya Engage</div></div>
+      <div class="psb"><div class="psn a" id="po-rate"></div><div class="psl">Engage Rate</div></div>
+      <div class="psb"><div class="psn" id="po-extra-num" style="font-size:20px"></div><div class="psl" id="po-extra-label"></div></div>
+    </div>
+    <div class="psect">Data Per Saluran</div>
+    <table class="ptable"><thead><tr><th>Saluran</th><th>Masuk</th><th>Engaged</th><th>Tidak Engage</th><th>Engage Rate</th></tr></thead><tbody id="po-ch-body"></tbody></table>
+    <div id="po-days-section"></div>
+    <div class="psect">Catatan</div>
+    <div class="pnote" id="po-note"></div>
+    <div class="pfoot"><div>Disediakan: <strong id="po-prep"></strong></div><div>Jana: <strong id="po-gen"></strong></div><div>SULIT — Kegunaan Dalaman</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CH=[
+  {key:'wa1',name:'WhatsApp 1',type:'Pertanyaan Umum',color:'#3b82f6'},
+  {key:'wa2',name:'WhatsApp 2',type:'Aduan & Sokongan',color:'#f59e0b'},
+  {key:'wa3',name:'WhatsApp 3',type:'Program & Pendaftaran',color:'#22c55e'},
+  {key:'em1',name:'Email 1',type:'Rasmi & Surat-menyurat',color:'#a855f7'},
+  {key:'em2',name:'Email 2',type:'Laporan & Maklumbalas',color:'#ec4899'},
+];
+
+// ── CONFIG ──
+function getCfg(){return{url:localStorage.getItem('sb_url')||'',key:localStorage.getItem('sb_key')||''};}
+function saveCfg(url,key){localStorage.setItem('sb_url',url);localStorage.setItem('sb_key',key);}
+
+// ── SUPABASE API ──
+async function sbFetch(path,opts={}){
+  const{url,key}=getCfg();
+  if(!url||!key)throw new Error('Supabase belum dikonfigurasi');
+  const res=await fetch(url+'/rest/v1/'+path,{
+    headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})},
+    ...opts
+  });
+  if(!res.ok){const e=await res.text();throw new Error(e);}
+  return res.status===204?null:res.json();
+}
+
+async function insertRecord(rec){
+  return sbFetch('cs_daily_reports',{method:'POST',body:JSON.stringify(rec)});
+}
+
+async function fetchRecords(from,to){
+  let q=`cs_daily_reports?order=report_date.desc`;
+  if(from)q+=`&report_date=gte.${from}`;
+  if(to)q+=`&report_date=lte.${to}`;
+  return sbFetch(q,{headers:{'Range':'0-999'}});
+}
+
+async function deleteRecord(id){
+  return sbFetch(`cs_daily_reports?id=eq.${id}`,{method:'DELETE'});
+}
+
+// ── CONNECTION CHECK ──
+async function checkConn(){
+  const badge=document.getElementById('conn-badge');
+  const{url,key}=getCfg();
+  if(!url||!key){badge.className='conn-badge conn-err';badge.textContent='⚠️ Belum setup';return;}
+  badge.className='conn-badge conn-loading';badge.textContent='⏳ Connecting...';
+  try{
+    await sbFetch('cs_daily_reports?limit=1');
+    badge.className='conn-badge conn-ok';badge.textContent='✅ Connected';
+  }catch(e){
+    badge.className='conn-badge conn-err';badge.textContent='❌ Gagal';
+  }
+}
+
+// ── INIT ──
+const today=new Date();
+document.getElementById('hdr-date').textContent=today.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.getElementById('d-date').value=today.toISOString().split('T')[0];
+(function(){const d=new Date(today);const day=d.getDay()||7;d.setDate(d.getDate()-day+1);document.getElementById('w-from').value=d.toISOString().split('T')[0];const d2=new Date(d);d2.setDate(d.getDate()+4);document.getElementById('w-to').value=d2.toISOString().split('T')[0];})();
+document.getElementById('m-month').value=today.toISOString().slice(0,7);
+const cfg=getCfg();
+if(cfg.url)document.getElementById('cfg-url').value=cfg.url;
+if(cfg.key)document.getElementById('cfg-key').value=cfg.key;
+checkConn();
+
+// ── HELPERS ──
+function rc(v){if(v===null)return'rn';if(v>=90)return'rh';if(v>=70)return'rm';return'rl';}
+function prc(v){if(v===null)return'n';if(v>=90)return'h';if(v>=70)return'm';return'l';}
+function fmtDate(s){const d=new Date(s+'T00:00:00');return d.toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'});}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(name==='history')renderHistory();
+  if(name==='weekly')wLoad();
+  if(name==='monthly')mLoad();
+}
+
+// ── SETUP ──
+async function saveConfig(){
+  const url=document.getElementById('cfg-url').value.trim().replace(/\/$/,'');
+  const key=document.getElementById('cfg-key').value.trim();
+  if(!url||!key){toast('⚠️ Isi kedua-dua URL dan Key');return;}
+  saveCfg(url,key);
+  const res=document.getElementById('test-result');
+  res.style.display='block';res.innerHTML='<span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Testing...';
+  try{
+    await sbFetch('cs_daily_reports?limit=1');
+    res.innerHTML='✅ <strong>Berjaya!</strong> Sambungan ke Supabase OK.';res.style.color='var(--green)';
+    document.getElementById('conn-badge').className='conn-badge conn-ok';
+    document.getElementById('conn-badge').textContent='✅ Connected';
+    toast('✅ Config disimpan & sambungan berjaya!');
+  }catch(e){
+    res.innerHTML='❌ <strong>Gagal:</strong> '+e.message;res.style.color='var(--red)';
+    document.getElementById('conn-badge').className='conn-badge conn-err';
+    document.getElementById('conn-badge').textContent='❌ Gagal';
+  }
+}
+function clearConfig(){
+  if(!confirm('Padam config Supabase?'))return;
+  localStorage.removeItem('sb_url');localStorage.removeItem('sb_key');
+  document.getElementById('cfg-url').value='';document.getElementById('cfg-key').value='';
+  document.getElementById('test-result').style.display='none';
+  document.getElementById('conn-badge').className='conn-badge conn-err';
+  document.getElementById('conn-badge').textContent='⚠️ Belum setup';
+  toast('🗑️ Config dipadam');
+}
+function copySQL(){
+  navigator.clipboard.writeText(document.getElementById('sql-block').textContent);
+  toast('📋 SQL disalin!');
+}
+
+// ── DAILY ──
+function dGetRows(){
+  return Array.from(document.querySelectorAll('#d-tbody tr[data-ch]')).map(tr=>{
+    const inp=tr.querySelectorAll('input');
+    return{masuk:parseInt(inp[0].value)||0,engaged:parseInt(inp[1].value)||0};
+  });
+}
+function dRecalc(){
+  const rows=dGetRows();
+  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
+  const tR=tM>0?Math.round(tE/tM*100):null;
+  document.getElementById('d-tot').textContent=tM;
+  document.getElementById('d-eng').textContent=tE;
+  document.getElementById('d-rate').textContent=tR!==null?tR+'%':'—';
+  document.getElementById('d-totM').textContent=tM;
+  document.getElementById('d-totE').textContent=tE;
+  const tr=document.getElementById('d-totR');tr.textContent=tR!==null?tR+'%':'—';tr.className='rate-badge '+rc(tR);
+  Array.from(document.querySelectorAll('#d-tbody tr[data-ch]')).forEach((row,i)=>{
+    const r=rows[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
+    const el=row.querySelector('.rate-badge');el.textContent=rate!==null?rate+'%':'—';el.className='rate-badge '+rc(rate);
+  });
+}
+function dReset(){
+  document.getElementById('d-name').value='';document.getElementById('d-notes').value='';
+  document.getElementById('d-shift').selectedIndex=2;
+  document.getElementById('d-date').value=today.toISOString().split('T')[0];
+  document.querySelectorAll('.num-input').forEach(i=>i.value=0);dRecalc();toast('↺ Borang diset semula');
+}
+async function dSaveAndPDF(){
+  const name=document.getElementById('d-name').value.trim();
+  const dateVal=document.getElementById('d-date').value;
+  if(!name){toast('⚠️ Sila isi nama staf');return;}
+  if(!dateVal){toast('⚠️ Sila pilih tarikh');return;}
+  const rows=dGetRows();
+  const rec={
+    report_date:dateVal,staff_name:name,shift:document.getElementById('d-shift').value,
+    notes:document.getElementById('d-notes').value.trim()||null,
+    wa1_masuk:rows[0].masuk,wa1_engaged:rows[0].engaged,
+    wa2_masuk:rows[1].masuk,wa2_engaged:rows[1].engaged,
+    wa3_masuk:rows[2].masuk,wa3_engaged:rows[2].engaged,
+    em1_masuk:rows[3].masuk,em1_engaged:rows[3].engaged,
+    em2_masuk:rows[4].masuk,em2_engaged:rows[4].engaged,
+  };
+  const btn=document.getElementById('btn-save-pdf');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Menyimpan...';
+  try{
+    await insertRecord(rec);toast('💾 Rekod disimpan ke Supabase!');
+    setTimeout(()=>genDailyPDF({...rec,channels:rows}),400);
+  }catch(e){
+    toast('❌ Gagal simpan: '+e.message);
+    console.error(e);
+  }finally{btn.disabled=false;btn.innerHTML='💾 Simpan & PDF';}
+}
+function dPDFonly(){
+  const name=document.getElementById('d-name').value.trim();
+  const dateVal=document.getElementById('d-date').value;
+  if(!name){toast('⚠️ Sila isi nama staf');return;}
+  if(!dateVal){toast('⚠️ Sila pilih tarikh');return;}
+  genDailyPDF({report_date:dateVal,staff_name:name,shift:document.getElementById('d-shift').value,notes:document.getElementById('d-notes').value.trim(),channels:dGetRows()});
+}
+
+function genDailyPDF(rec){
+  const rows=rec.channels||mapChFromRec(rec);
+  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
+  document.getElementById('po-title').textContent='Laporan Harian CS';
+  document.getElementById('po-badge').textContent='Daily Report';
+  document.getElementById('po-meta').innerHTML=`<div>Tarikh: <span>${fmtDate(rec.report_date)}</span></div><div>Staf: <span>${rec.staff_name}</span></div><div>Shift: <span>${rec.shift||'—'}</span></div>`;
+  document.getElementById('po-tot').textContent=tM;document.getElementById('po-eng').textContent=tE;document.getElementById('po-rate').textContent=tR!==null?tR+'%':'—';
+  document.getElementById('po-extra-num').textContent='—';document.getElementById('po-extra-label').textContent='';
+  document.getElementById('po-days-section').innerHTML='';
+  buildPDFChTable(rows);
+  document.getElementById('po-note').textContent=rec.notes||'Tiada catatan.';
+  document.getElementById('po-prep').textContent=rec.staff_name;
+  document.getElementById('po-gen').textContent=new Date().toLocaleString('ms-MY');
+  runPDF(`CS-Daily-${rec.report_date}-${rec.staff_name.replace(/\s+/g,'-')}.pdf`);
+}
+
+// ── WEEKLY ──
+async function wLoad(){
+  const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
+  if(!from||!to)return;
+  document.getElementById('w-loading').style.display='block';
+  document.getElementById('w-result').style.display='none';
+  document.getElementById('w-empty').style.display='none';
+  try{
+    const records=await fetchRecords(from,to);
+    document.getElementById('w-loading').style.display='none';
+    if(!records||!records.length){document.getElementById('w-empty').style.display='block';return;}
+    document.getElementById('w-result').style.display='block';
+    renderAgg(records,'w');
+    let html='';
+    records.forEach(r=>{
+      const rows=mapChFromRec(r);
+      const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;
+      html+=`<tr><td>${fmtDate(r.report_date)}</td><td>${r.staff_name}</td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td><td style="color:var(--text-secondary);font-size:11px">${r.notes||'—'}</td></tr>`;
+    });
+    document.getElementById('w-days-body').innerHTML=html;
+  }catch(e){
+    document.getElementById('w-loading').style.display='none';
+    document.getElementById('w-empty').style.display='block';
+    document.getElementById('w-empty').querySelector('.empty-text').textContent='❌ Gagal muat data: '+e.message;
+    toast('❌ '+e.message);
+  }
+}
+async function wPDF(){
+  const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
+  const prep=document.getElementById('w-preparer').value.trim()||'—';
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data');return;}
+  const agg=calcAgg(records);
+  document.getElementById('po-title').textContent='Laporan Mingguan CS';
+  document.getElementById('po-badge').textContent='Weekly Report';
+  document.getElementById('po-meta').innerHTML=`<div>Tempoh: <span>${fmtDate(from)} – ${fmtDate(to)}</span></div><div>Disediakan: <span>${prep}</span></div>`;
+  document.getElementById('po-tot').textContent=agg.tM;document.getElementById('po-eng').textContent=agg.tE;document.getElementById('po-rate').textContent=agg.tR!==null?agg.tR+'%':'—';
+  document.getElementById('po-extra-num').textContent=records.length+' hari';document.getElementById('po-extra-label').textContent='Hari Ada Data';
+  buildPDFChTable(agg.ch);
+  let dHtml=`<div style="margin-bottom:20px"><div class="psect">Pecahan Harian</div><table class="pdays-table"><thead><tr><th>Tarikh</th><th>Staf</th><th>Masuk</th><th>Engaged</th><th>Rate</th></tr></thead><tbody>`;
+  records.forEach(r=>{const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;dHtml+=`<tr><td>${fmtDate(r.report_date)}</td><td>${r.staff_name}</td><td>${tM}</td><td>${tE}</td><td><span class="pr ${prc(rt)}">${rt!==null?rt+'%':'—'}</span></td></tr>`;});
+  dHtml+=`</tbody></table></div>`;
+  document.getElementById('po-days-section').innerHTML=dHtml;
+  document.getElementById('po-note').textContent=document.getElementById('w-notes').value.trim()||'Tiada catatan.';
+  document.getElementById('po-prep').textContent=prep;document.getElementById('po-gen').textContent=new Date().toLocaleString('ms-MY');
+  runPDF(`CS-Weekly-${from}-${to}.pdf`);
+}
+
+// ── MONTHLY ──
+async function mLoad(){
+  const month=document.getElementById('m-month').value;
+  if(!month)return;
+  const[yr,mo]=month.split('-');
+  const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
+  document.getElementById('m-loading').style.display='block';
+  document.getElementById('m-result').style.display='none';document.getElementById('m-empty').style.display='none';
+  try{
+    const records=await fetchRecords(from,to);
+    document.getElementById('m-loading').style.display='none';
+    if(!records||!records.length){document.getElementById('m-empty').style.display='block';return;}
+    document.getElementById('m-result').style.display='block';
+    renderAgg(records,'m',true);
+    let html='';
+    records.forEach(r=>{const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;html+=`<tr><td>${fmtDate(r.report_date)}</td><td>${r.staff_name}</td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td></tr>`;});
+    document.getElementById('m-days-body').innerHTML=html;
+  }catch(e){
+    document.getElementById('m-loading').style.display='none';document.getElementById('m-empty').style.display='block';
+    document.getElementById('m-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;toast('❌ '+e.message);
+  }
+}
+async function mPDF(){
+  const month=document.getElementById('m-month').value,prep=document.getElementById('m-preparer').value.trim()||'—';
+  if(!month)return;
+  const[yr,mo]=month.split('-');const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data');return;}
+  const agg=calcAgg(records);
+  const monthName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('ms-MY',{month:'long',year:'numeric'});
+  document.getElementById('po-title').textContent='Laporan Bulanan CS';document.getElementById('po-badge').textContent='Monthly Report';
+  document.getElementById('po-meta').innerHTML=`<div>Bulan: <span>${monthName}</span></div><div>Hari Ada Data: <span>${records.length}</span></div><div>Disediakan: <span>${prep}</span></div>`;
+  document.getElementById('po-tot').textContent=agg.tM;document.getElementById('po-eng').textContent=agg.tE;document.getElementById('po-rate').textContent=agg.tR!==null?agg.tR+'%':'—';
+  document.getElementById('po-extra-num').textContent=records.length+' hari';document.getElementById('po-extra-label').textContent='Hari Ada Data';
+  buildPDFChTable(agg.ch);document.getElementById('po-days-section').innerHTML='';
+  document.getElementById('po-note').textContent=document.getElementById('m-notes').value.trim()||'Tiada catatan.';
+  document.getElementById('po-prep').textContent=prep;document.getElementById('po-gen').textContent=new Date().toLocaleString('ms-MY');
+  runPDF(`CS-Monthly-${month}.pdf`);
+}
+
+// ── HISTORY ──
+async function renderHistory(){
+  document.getElementById('hist-loading').style.display='block';
+  document.getElementById('hist-card').style.display='none';document.getElementById('hist-empty').style.display='none';
+  try{
+    const records=await fetchRecords();
+    document.getElementById('hist-loading').style.display='none';
+    if(!records||!records.length){document.getElementById('hist-empty').style.display='block';return;}
+    document.getElementById('hist-card').style.display='block';
+    document.getElementById('hist-body').innerHTML=records.map(r=>{
+      const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;
+      return`<tr><td>${fmtDate(r.report_date)}</td><td>${r.staff_name}</td><td style="font-size:11px;color:var(--text-secondary)">${(r.shift||'').split('(')[0].trim()}</td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td><td style="color:var(--text-secondary);font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes||'—'}</td><td><button class="del-btn" onclick="delRecord('${r.id}')">✕</button></td></tr>`;
+    }).join('');
+  }catch(e){
+    document.getElementById('hist-loading').style.display='none';document.getElementById('hist-empty').style.display='block';
+    document.getElementById('hist-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;
+  }
+}
+async function delRecord(id){
+  if(!confirm('Padam rekod ini?'))return;
+  try{await deleteRecord(id);toast('🗑️ Rekod dipadam');renderHistory();}
+  catch(e){toast('❌ Gagal padam: '+e.message);}
+}
+async function exportCSV(){
+  try{
+    const records=await fetchRecords();
+    if(!records||!records.length){toast('⚠️ Tiada data');return;}
+    let csv='Tarikh,Nama,Shift,WA1 Masuk,WA1 Engaged,WA2 Masuk,WA2 Engaged,WA3 Masuk,WA3 Engaged,EM1 Masuk,EM1 Engaged,EM2 Masuk,EM2 Engaged,Jumlah Masuk,Jumlah Engaged,Engage Rate,Catatan\n';
+    records.forEach(r=>{
+      const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100)+'%':'—';
+      csv+=`${r.report_date},"${r.staff_name}","${r.shift||''}",${r.wa1_masuk},${r.wa1_engaged},${r.wa2_masuk},${r.wa2_engaged},${r.wa3_masuk},${r.wa3_engaged},${r.em1_masuk},${r.em1_engaged},${r.em2_masuk},${r.em2_engaged},${tM},${tE},${rt},"${(r.notes||'').replace(/"/g,'""')}"\n`;
+    });
+    const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='CS-Records.csv';a.click();
+    toast('📤 CSV dieksport');
+  }catch(e){toast('❌ '+e.message);}
+}
+
+// ── AGG ──
+function mapChFromRec(r){
+  return[
+    {masuk:r.wa1_masuk||0,engaged:r.wa1_engaged||0},
+    {masuk:r.wa2_masuk||0,engaged:r.wa2_engaged||0},
+    {masuk:r.wa3_masuk||0,engaged:r.wa3_engaged||0},
+    {masuk:r.em1_masuk||0,engaged:r.em1_engaged||0},
+    {masuk:r.em2_masuk||0,engaged:r.em2_engaged||0},
+  ];
+}
+function calcAgg(records){
+  const ch=CH.map(()=>({masuk:0,engaged:0}));
+  records.forEach(r=>{const rows=mapChFromRec(r);rows.forEach((c,i)=>{ch[i].masuk+=c.masuk;ch[i].engaged+=c.engaged;});});
+  const tM=ch.reduce((s,c)=>s+c.masuk,0),tE=ch.reduce((s,c)=>s+c.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
+  return{ch,tM,tE,tR};
+}
+function renderAgg(records,prefix,showDays=false){
+  const agg=calcAgg(records);
+  document.getElementById(prefix+'-tot').textContent=agg.tM;
+  document.getElementById(prefix+'-eng').textContent=agg.tE;
+  document.getElementById(prefix+'-rate').textContent=agg.tR!==null?agg.tR+'%':'—';
+  let html='';
+  agg.ch.forEach((c,i)=>{
+    const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    const days=showDays?records.filter(r=>mapChFromRec(r)[i].masuk>0).length:null;
+    html+=`<tr><td><div class="ch-label"><div class="ch-dot" style="background:${ch.color}"></div><div><div class="ch-name">${ch.name}</div><div class="ch-type">${ch.type}</div></div></div></td><td>${c.masuk}</td><td>${c.engaged}</td><td>${Math.max(0,c.masuk-c.engaged)}</td><td><span class="rate-badge ${rc(rate)}">${rate!==null?rate+'%':'—'}</span></td>${showDays?`<td>${days!==null?days+' hari':'—'}</td>`:''}</tr>`;
+  });
+  const tMiss=Math.max(0,agg.tM-agg.tE);
+  html+=`<tr><td><strong>JUMLAH</strong></td><td><strong>${agg.tM}</strong></td><td><strong>${agg.tE}</strong></td><td><strong>${tMiss}</strong></td><td><span class="rate-badge ${rc(agg.tR)}">${agg.tR!==null?agg.tR+'%':'—'}</span></td>${showDays?'<td>—</td>':''}</tr>`;
+  document.getElementById(prefix+'-agg-body').innerHTML=html;
+}
+function buildPDFChTable(rows){
+  let html='';
+  rows.forEach((r,i)=>{
+    const ch=CH[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
+    html+=`<tr><td><span class="pdot" style="background:${ch.color}"></span><strong>${ch.name}</strong><br><span style="color:#8a97b0;font-size:10px">${ch.type}</span></td><td>${r.masuk}</td><td>${r.engaged}</td><td>${Math.max(0,r.masuk-r.engaged)}</td><td><span class="pr ${prc(rate)}">${rate!==null?rate+'%':'—'}</span></td></tr>`;
+  });
+  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
+  html+=`<tr><td><strong>JUMLAH KESELURUHAN</strong></td><td><strong>${tM}</strong></td><td><strong>${tE}</strong></td><td><strong>${Math.max(0,tM-tE)}</strong></td><td><span class="pr ${prc(tR)}">${tR!==null?tR+'%':'—'}</span></td></tr>`;
+  document.getElementById('po-ch-body').innerHTML=html;
+}
+function runPDF(filename){
+  const el=document.getElementById('pdf-out');
+
+  // Show generating toast
+  const t=document.getElementById('toast');
+  t.textContent='⏳ Menyediakan PDF... sila tunggu';
+  t.classList.add('show');
+
+  // Place el visible but off-screen so fonts & layout render properly
+  el.style.cssText='display:block;position:fixed;left:0;top:0;z-index:-1;opacity:0;width:794px;';
+
+  // Wait for fonts, images and full layout paint
+  document.fonts.ready.then(()=>{
+    // Extra delay to let html2canvas capture full content
+    setTimeout(()=>{
+      const opt={
+        margin:0,
+        filename,
+        image:{type:'png',quality:1},
+        html2canvas:{
+          scale:2,
+          useCORS:true,
+          logging:false,
+          letterRendering:true,
+          allowTaint:true,
+          width:794,
+          windowWidth:794,
+          scrollY:0,
+          scrollX:0,
+          onclone:(doc)=>{
+            // Make sure cloned element is fully visible
+            const cloned=doc.getElementById('pdf-out');
+            if(cloned) cloned.style.cssText='display:block;position:static;opacity:1;width:794px;';
+          }
+        },
+        jsPDF:{unit:'px',format:'a4',orientation:'portrait',hotfixes:['px_scaling']},
+        pagebreak:{mode:['avoid-all']}
+      };
+      html2pdf().set(opt).from(el).save().then(()=>{
+        el.style.cssText='display:none;';
+        t.classList.remove('show');
+        toast('✅ PDF berjaya dimuat turun!');
+      }).catch(err=>{
+        el.style.cssText='display:none;';
+        t.classList.remove('show');
+        toast('❌ Gagal jana PDF: '+err.message);
+        console.error(err);
+      });
+    }, 1500);
+  });
+}
+
+dRecalc();
+
+// ── WHATSAPP FORMAT ──
+let waText = '';
+
+function rateEmoji(r){ if(r===null)return'⚪'; if(r>=90)return'🟢'; if(r>=70)return'🟡'; return'🔴'; }
+
+function buildWADaily(){
+  const name=document.getElementById('d-name').value.trim()||'—';
+  const dateVal=document.getElementById('d-date').value;
+  const shift=document.getElementById('d-shift').value;
+  const notes=document.getElementById('d-notes').value.trim();
+  const rows=dGetRows();
+  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
+  const tR=tM>0?Math.round(tE/tM*100):null;
+  const dateStr=dateVal?fmtDate(dateVal):'—';
+  let txt='';
+  txt+='📊 *LAPORAN HARIAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Tarikh:* ${dateStr}\n`;
+  txt+=`👤 *Staf:* ${name}\n`;
+  txt+=`🕐 *Shift:* ${shift.split('(')[0].trim()}\n`;
+  txt+='\n';
+  txt+='📬 *PERTANYAAN MASUK*\n';
+  txt+='─────────────────────\n';
+  rows.forEach((r,i)=>{
+    const ch=CH[i];const rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}* (${ch.type})\n`;
+    txt+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📥 *Jumlah Masuk:* ${tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function buildWAWeekly(){
+  const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
+  if(!from||!to){toast('⚠️ Pilih tarikh minggu dulu');return null;}
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data untuk tempoh ini');return null;}
+  const agg=calcAgg(records);
+  let txt='';
+  txt+='📊 *LAPORAN MINGGUAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Tempoh:* ${fmtDate(from)} – ${fmtDate(to)}\n`;
+  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
+  txt+='\n';
+  txt+='📬 *AGGREGAT PER SALURAN*\n';
+  txt+='─────────────────────\n';
+  agg.ch.forEach((c,i)=>{
+    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  const tR=agg.tR;
+  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  const notes=document.getElementById('w-notes').value.trim();
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function buildWAMonthly(){
+  const month=document.getElementById('m-month').value;
+  if(!month){toast('⚠️ Pilih bulan dulu');return null;}
+  const[yr,mo]=month.split('-');
+  const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data untuk bulan ini');return null;}
+  const agg=calcAgg(records);
+  const monthName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('ms-MY',{month:'long',year:'numeric'});
+  let txt='';
+  txt+='📊 *LAPORAN BULANAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Bulan:* ${monthName}\n`;
+  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
+  txt+='\n';
+  txt+='📬 *AGGREGAT PER SALURAN*\n';
+  txt+='─────────────────────\n';
+  agg.ch.forEach((c,i)=>{
+    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  const tR=agg.tR;
+  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  const notes=document.getElementById('m-notes').value.trim();
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function showWA(type){
+  const modal=document.getElementById('wa-modal');
+  const sub=document.getElementById('wa-subtitle');
+  const preview=document.getElementById('wa-preview');
+  modal.style.display='flex';
+  preview.textContent='⏳ Menyediakan teks...';
+  let txt=null;
+  if(type==='daily'){sub.textContent='Laporan Harian';txt=buildWADaily();}
+  else if(type==='weekly'){sub.textContent='Laporan Mingguan';txt=await buildWAWeekly();}
+  else if(type==='monthly'){sub.textContent='Laporan Bulanan';txt=await buildWAMonthly();}
+  if(!txt){modal.style.display='none';return;}
+  waText=txt;
+  preview.textContent=txt;
+}
+
+function closeWA(){
+  document.getElementById('wa-modal').style.display='none';
+  waText='';
+}
+
+function copyWA(){
+  if(!waText)return;
+  navigator.clipboard.writeText(waText).then(()=>{
+    const btn=document.getElementById('wa-copy-btn');
+    btn.textContent='✅ Disalin!';btn.style.background='#128C7E';
+    setTimeout(()=>{btn.innerHTML='📋 Copy Teks';btn.style.background='#25D366';},2000);
+    toast('✅ Teks WhatsApp disalin!');
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=waText;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ Teks WhatsApp disalin!');
+  });
+}
+
+document.getElementById('wa-modal').addEventListener('click',function(e){
+  if(e.target===this)closeWA();
+});
+
+
+</script>
+</body>
+</html>
