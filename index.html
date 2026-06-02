@@ -830,16 +830,16 @@ function buildWADaily(){
   const rows=dGetRows();
   const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
   const tR=tM>0?Math.round(tE/tM*100):null;
-  let t='📊 *LAPORAN HARIAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  let t='📊 *LAPORAN HARIAN CS*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   t+=`📅 *Tarikh:* ${dateVal?fmtDate(dateVal):'—'}\n`;
   t+=`👤 *Staf:* ${name}\n🕐 *Shift:* ${shift.split('(')[0].trim()}\n\n`;
-  t+='📬 *PERTANYAAN MASUK*\n─────────────────────\n';
+  t+='📬 *PERTANYAAN MASUK*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   rows.forEach((r,i)=>{
     const ch=CH[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}* (${ch.type})\n`;
     t+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${tM}\n✅ *Berjaya Engage:* ${tE}\n${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${tM}\n✅ *Berjaya Engage:* ${tE}\n${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
   t+='\n_IhsanKu — Customer Service_';
   return t;
@@ -851,14 +851,14 @@ async function buildWAWeekly(){
   const records=await fetchRecords(from,to);
   if(!records||!records.length){toast('⚠️ Tiada data');return null;}
   const agg=calcAgg(records);
-  let t='📊 *LAPORAN MINGGUAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  let t='📊 *LAPORAN MINGGUAN CS*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   t+=`📅 *Tempoh:* ${fmtDate(from)} – ${fmtDate(to)}\n📆 *Hari Ada Data:* ${records.length} hari\n\n`;
-  t+='📬 *AGGREGAT PER SALURAN*\n─────────────────────\n';
+  t+='📬 *AGGREGAT PER SALURAN*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   agg.ch.forEach((c,i)=>{
     const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('w-notes').value.trim();
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
   t+='\n_IhsanKu — Customer Service_';
@@ -874,14 +874,14 @@ async function buildWAMonthly(){
   if(!records||!records.length){toast('⚠️ Tiada data');return null;}
   const agg=calcAgg(records);
   const monthName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('ms-MY',{month:'long',year:'numeric'});
-  let t='📊 *LAPORAN BULANAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  let t='📊 *LAPORAN BULANAN CS*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   t+=`📅 *Bulan:* ${monthName}\n📆 *Hari Ada Data:* ${records.length} hari\n\n`;
-  t+='📬 *AGGREGAT PER SALURAN*\n─────────────────────\n';
+  t+='📬 *AGGREGAT PER SALURAN*\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
   agg.ch.forEach((c,i)=>{
     const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('m-notes').value.trim();
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
   t+='\n_IhsanKu — Customer Service_';
