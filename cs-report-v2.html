@@ -96,11 +96,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
 @keyframes spin{to{transform:rotate(360deg)}}
-#pdf-out{display:none;font-family:'Outfit',sans-serif;background:#fff;width:210mm;padding:0}
+#pdf-out{display:none;font-family:'Outfit',Arial,sans-serif;background:#fff;width:794px;padding:0;box-sizing:border-box}
 .ph{background:#0f1f3d;padding:24px 32px 20px;color:#fff}
 .ph-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .ph-org{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.ph-title{font-family:'DM Serif Display',serif;font-size:24px;color:#fff}
+.ph-title{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:#fff}
 .ph-badge{background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;align-self:flex-start}
 .ph-meta{display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.55);flex-wrap:wrap}
 .ph-meta span{color:#fff;font-weight:500}
@@ -138,7 +138,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="logo-mark">📋</div>
     <div>
       <div class="logo-text">CS Report System</div>
-      <div class="logo-sub">Customer Service NGO</div>
+      <div class="logo-sub">Ihsanku Malaysia</div>
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
@@ -205,6 +205,39 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <button class="btn btn-secondary" id="btn-save-pdf" onclick="dSaveAndPDF()">💾 Simpan & PDF</button>
     <button class="btn btn-primary" onclick="dPDFonly()">⬇ PDF Sahaja</button>
   </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button onclick="showWA('daily')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#25D366;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy untuk WhatsApp</button>
+  </div>
+  <div class="btn-row" style="margin-top:8px">
+    <button onclick="showWA('weekly')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#128C7E;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy Mingguan (WA)</button>
+    <button onclick="showWA('monthly')" style="flex:1;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#075E54;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 Copy Bulanan (WA)</button>
+  </div>
+</div>
+
+<!-- WA MODAL -->
+<div id="wa-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:500;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:88vh;overflow:hidden;display:flex;flex-direction:column">
+    <div style="background:#25D366;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:20px">📲</span>
+        <div>
+          <div style="font-weight:600;color:#fff;font-size:15px">Format WhatsApp</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.8)" id="wa-subtitle">—</div>
+        </div>
+      </div>
+      <button onclick="closeWA()" style="background:rgba(255,255,255,.25);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;line-height:1">✕</button>
+    </div>
+    <div style="padding:14px 16px;flex:1;overflow-y:auto">
+      <div style="background:#dcf8c6;border-radius:10px;padding:14px;margin-bottom:10px;border:1px solid #b8e0a0">
+        <pre id="wa-preview" style="font-family:Outfit,sans-serif;font-size:13px;color:#1a2540;white-space:pre-wrap;line-height:1.75;margin:0"></pre>
+      </div>
+      <div style="font-size:12px;color:#5a6a8a">Teks format <strong>*bold*</strong> WhatsApp. Terus paste dalam chat.</div>
+    </div>
+    <div style="padding:12px 16px;border-top:1px solid #e5e8f0;display:flex;gap:8px;flex-shrink:0">
+      <button onclick="closeWA()" style="flex:1;padding:9px;border-radius:8px;border:1.5px solid #dde3f0;background:#fff;font-family:Outfit,sans-serif;font-size:13px;cursor:pointer">Tutup</button>
+      <button id="wa-copy-btn" onclick="copyWA()" style="flex:2;padding:9px;border-radius:8px;border:none;background:#25D366;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📋 Copy Teks</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══════ WEEKLY ══════ -->
@@ -241,7 +274,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="card-header"><div class="card-icon" style="background:#eef2ff">📝</div><div class="card-title">Catatan Mingguan</div></div>
       <div class="card-body"><div class="field-group"><label>Rumusan</label><textarea id="w-notes" placeholder="cth: Minggu ini engage rate meningkat 5%..."></textarea></div></div>
     </div>
-    <div class="btn-row"><button class="btn btn-accent" onclick="wPDF()">⬇ Jana PDF Mingguan</button></div>
+    <div class="btn-row">
+      <button class="btn btn-accent" onclick="wPDF()">⬇ Jana PDF Mingguan</button>
+      <button onclick="showWA('weekly')" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#128C7E;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 WA</button>
+    </div>
   </div>
   <div id="w-empty" class="empty-state"><div class="empty-icon">📆</div><div class="empty-text">Pilih tarikh untuk muat data</div></div>
 </div>
@@ -279,7 +315,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       <div class="card-header"><div class="card-icon" style="background:#eef2ff">📝</div><div class="card-title">Catatan Bulanan</div></div>
       <div class="card-body"><div class="field-group"><label>Rumusan</label><textarea id="m-notes" placeholder="cth: Bulan ini jumlah pertanyaan meningkat 20%..."></textarea></div></div>
     </div>
-    <div class="btn-row"><button class="btn btn-accent" onclick="mPDF()">⬇ Jana PDF Bulanan</button></div>
+    <div class="btn-row">
+      <button class="btn btn-accent" onclick="mPDF()">⬇ Jana PDF Bulanan</button>
+      <button onclick="showWA('monthly')" style="display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:9px;border:none;background:#075E54;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:600;cursor:pointer">📲 WA</button>
+    </div>
   </div>
   <div id="m-empty" class="empty-state"><div class="empty-icon">🗓️</div><div class="empty-text">Pilih bulan untuk muat data</div></div>
 </div>
@@ -804,31 +843,205 @@ function buildPDFChTable(rows){
 }
 function runPDF(filename){
   const el=document.getElementById('pdf-out');
-  el.style.display='block';
-  el.style.position='fixed';
-  el.style.left='-9999px';
-  el.style.top='0';
+
+  // Show generating toast
+  const t=document.getElementById('toast');
+  t.textContent='⏳ Menyediakan PDF... sila tunggu';
+  t.classList.add('show');
+
+  // Place el visible but off-screen so fonts & layout render properly
+  el.style.cssText='display:block;position:fixed;left:0;top:0;z-index:-1;opacity:0;width:794px;';
+
+  // Wait for fonts, images and full layout paint
   document.fonts.ready.then(()=>{
+    // Extra delay to let html2canvas capture full content
     setTimeout(()=>{
-      html2pdf().set({
-        margin:[0,0,0,0],
+      const opt={
+        margin:0,
         filename,
-        image:{type:'jpeg',quality:1},
-        html2canvas:{scale:2,useCORS:true,logging:false,letterRendering:true,allowTaint:true,windowWidth:794},
-        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'},
-        pagebreak:{mode:['avoid-all','css','legacy']}
-      }).from(el).save().then(()=>{
-        el.style.display='none';
-        el.style.position='';
-        el.style.left='';
-        el.style.top='';
+        image:{type:'png',quality:1},
+        html2canvas:{
+          scale:2,
+          useCORS:true,
+          logging:false,
+          letterRendering:true,
+          allowTaint:true,
+          width:794,
+          windowWidth:794,
+          scrollY:0,
+          scrollX:0,
+          onclone:(doc)=>{
+            // Make sure cloned element is fully visible
+            const cloned=doc.getElementById('pdf-out');
+            if(cloned) cloned.style.cssText='display:block;position:static;opacity:1;width:794px;';
+          }
+        },
+        jsPDF:{unit:'px',format:'a4',orientation:'portrait',hotfixes:['px_scaling']},
+        pagebreak:{mode:['avoid-all']}
+      };
+      html2pdf().set(opt).from(el).save().then(()=>{
+        el.style.cssText='display:none;';
+        t.classList.remove('show');
         toast('✅ PDF berjaya dimuat turun!');
+      }).catch(err=>{
+        el.style.cssText='display:none;';
+        t.classList.remove('show');
+        toast('❌ Gagal jana PDF: '+err.message);
+        console.error(err);
       });
-    },800);
+    }, 1500);
   });
 }
 
 dRecalc();
+
+// ── WHATSAPP FORMAT ──
+let waText = '';
+
+function rateEmoji(r){ if(r===null)return'⚪'; if(r>=90)return'🟢'; if(r>=70)return'🟡'; return'🔴'; }
+
+function buildWADaily(){
+  const name=document.getElementById('d-name').value.trim()||'—';
+  const dateVal=document.getElementById('d-date').value;
+  const shift=document.getElementById('d-shift').value;
+  const notes=document.getElementById('d-notes').value.trim();
+  const rows=dGetRows();
+  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
+  const tR=tM>0?Math.round(tE/tM*100):null;
+  const dateStr=dateVal?fmtDate(dateVal):'—';
+  let txt='';
+  txt+='📊 *LAPORAN HARIAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Tarikh:* ${dateStr}\n`;
+  txt+=`👤 *Staf:* ${name}\n`;
+  txt+=`🕐 *Shift:* ${shift.split('(')[0].trim()}\n`;
+  txt+='\n';
+  txt+='📬 *PERTANYAAN MASUK*\n';
+  txt+='─────────────────────\n';
+  rows.forEach((r,i)=>{
+    const ch=CH[i];const rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}* (${ch.type})\n`;
+    txt+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📥 *Jumlah Masuk:* ${tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function buildWAWeekly(){
+  const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
+  if(!from||!to){toast('⚠️ Pilih tarikh minggu dulu');return null;}
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data untuk tempoh ini');return null;}
+  const agg=calcAgg(records);
+  let txt='';
+  txt+='📊 *LAPORAN MINGGUAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Tempoh:* ${fmtDate(from)} – ${fmtDate(to)}\n`;
+  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
+  txt+='\n';
+  txt+='📬 *AGGREGAT PER SALURAN*\n';
+  txt+='─────────────────────\n';
+  agg.ch.forEach((c,i)=>{
+    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  const tR=agg.tR;
+  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  const notes=document.getElementById('w-notes').value.trim();
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function buildWAMonthly(){
+  const month=document.getElementById('m-month').value;
+  if(!month){toast('⚠️ Pilih bulan dulu');return null;}
+  const[yr,mo]=month.split('-');
+  const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
+  const records=await fetchRecords(from,to);
+  if(!records||!records.length){toast('⚠️ Tiada data untuk bulan ini');return null;}
+  const agg=calcAgg(records);
+  const monthName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('ms-MY',{month:'long',year:'numeric'});
+  let txt='';
+  txt+='📊 *LAPORAN BULANAN CS*\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  txt+=`📅 *Bulan:* ${monthName}\n`;
+  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
+  txt+='\n';
+  txt+='📬 *AGGREGAT PER SALURAN*\n';
+  txt+='─────────────────────\n';
+  agg.ch.forEach((c,i)=>{
+    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    const icon=['📱','📱','📱','✉️','✉️'][i];
+    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+  });
+  txt+='\n';
+  txt+='━━━━━━━━━━━━━━━━━━━━\n';
+  const tR=agg.tR;
+  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
+  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
+  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  const notes=document.getElementById('m-notes').value.trim();
+  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
+  txt+='\n';
+  txt+='_[NAMA NGO] — Customer Service_';
+  return txt;
+}
+
+async function showWA(type){
+  const modal=document.getElementById('wa-modal');
+  const sub=document.getElementById('wa-subtitle');
+  const preview=document.getElementById('wa-preview');
+  modal.style.display='flex';
+  preview.textContent='⏳ Menyediakan teks...';
+  let txt=null;
+  if(type==='daily'){sub.textContent='Laporan Harian';txt=buildWADaily();}
+  else if(type==='weekly'){sub.textContent='Laporan Mingguan';txt=await buildWAWeekly();}
+  else if(type==='monthly'){sub.textContent='Laporan Bulanan';txt=await buildWAMonthly();}
+  if(!txt){modal.style.display='none';return;}
+  waText=txt;
+  preview.textContent=txt;
+}
+
+function closeWA(){
+  document.getElementById('wa-modal').style.display='none';
+  waText='';
+}
+
+function copyWA(){
+  if(!waText)return;
+  navigator.clipboard.writeText(waText).then(()=>{
+    const btn=document.getElementById('wa-copy-btn');
+    btn.textContent='✅ Disalin!';btn.style.background='#128C7E';
+    setTimeout(()=>{btn.innerHTML='📋 Copy Teks';btn.style.background='#25D366';},2000);
+    toast('✅ Teks WhatsApp disalin!');
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=waText;
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');
+    document.body.removeChild(ta);
+    toast('✅ Teks WhatsApp disalin!');
+  });
+}
+
+document.getElementById('wa-modal').addEventListener('click',function(e){
+  if(e.target===this)closeWA();
+});
+
+
 </script>
 </body>
 </html>
