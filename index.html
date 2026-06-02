@@ -96,11 +96,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
 @keyframes spin{to{transform:rotate(360deg)}}
-#pdf-out{display:none;font-family:'Outfit',Arial,sans-serif;background:#fff;width:794px;padding:0;box-sizing:border-box}
+#pdf-out{display:none;font-family:Arial,sans-serif;background:#fff;width:794px;padding:0;box-sizing:border-box}
 .ph{background:#0f1f3d;padding:24px 32px 20px;color:#fff}
 .ph-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
 .ph-org{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.ph-title{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:#fff}
+.ph-title{font-family:Georgia,serif;font-size:24px;color:#fff}
 .ph-badge{background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;align-self:flex-start}
 .ph-meta{display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.55);flex-wrap:wrap}
 .ph-meta span{color:#fff;font-weight:500}
@@ -472,25 +472,58 @@ CREATE POLICY "Allow all" ON cs_daily_reports
 
 <!-- PDF OUTPUT -->
 <div id="pdf-out">
-  <div class="ph">
-    <div class="ph-top"><div><div class="ph-org">[NAMA NGO] — Customer Service Division</div><div class="ph-title" id="po-title"></div></div><div class="ph-badge" id="po-badge"></div></div>
-    <div class="ph-meta" id="po-meta"></div>
-  </div>
-  <div class="pb">
-    <div class="psect">Ringkasan Keseluruhan</div>
-    <div class="psum">
-      <div class="psb"><div class="psn" id="po-tot"></div><div class="psl">Jumlah Masuk</div></div>
-      <div class="psb"><div class="psn g" id="po-eng"></div><div class="psl">Berjaya Engage</div></div>
-      <div class="psb"><div class="psn a" id="po-rate"></div><div class="psl">Engage Rate</div></div>
-      <div class="psb"><div class="psn" id="po-extra-num" style="font-size:20px"></div><div class="psl" id="po-extra-label"></div></div>
+<div style="background:#0f1f3d;padding:24px 32px 20px;color:#fff;font-family:Arial,sans-serif">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+    <div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">[NAMA NGO] — Customer Service Division</div>
+      <div id="po-title" style="font-family:Georgia,serif;font-size:24px;color:#fff;font-weight:bold"></div>
     </div>
-    <div class="psect">Data Per Saluran</div>
-    <table class="ptable"><thead><tr><th>Saluran</th><th>Masuk</th><th>Engaged</th><th>Tidak Engage</th><th>Engage Rate</th></tr></thead><tbody id="po-ch-body"></tbody></table>
-    <div id="po-days-section"></div>
-    <div class="psect">Catatan</div>
-    <div class="pnote" id="po-note"></div>
-    <div class="pfoot"><div>Disediakan: <strong id="po-prep"></strong></div><div>Jana: <strong id="po-gen"></strong></div><div>SULIT — Kegunaan Dalaman</div></div>
+    <div id="po-badge" style="background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:5px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap"></div>
   </div>
+  <div id="po-meta" style="display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.6);flex-wrap:wrap"></div>
+</div>
+<div style="padding:24px 32px;background:#fff;font-family:Arial,sans-serif">
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Ringkasan Keseluruhan</div>
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
+      <div id="po-tot" style="font-family:Georgia,serif;font-size:28px;color:#0f1f3d;line-height:1;font-weight:bold"></div>
+      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Jumlah Masuk</div>
+    </div>
+    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
+      <div id="po-eng" style="font-family:Georgia,serif;font-size:28px;color:#1a7a4a;line-height:1;font-weight:bold"></div>
+      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Berjaya Engage</div>
+    </div>
+    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
+      <div id="po-rate" style="font-family:Georgia,serif;font-size:28px;color:#b07800;line-height:1;font-weight:bold"></div>
+      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Engage Rate</div>
+    </div>
+    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
+      <div id="po-extra-num" style="font-family:Georgia,serif;font-size:22px;color:#0f1f3d;line-height:1;font-weight:bold"></div>
+      <div id="po-extra-label" style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase"></div>
+    </div>
+  </div>
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Data Per Saluran</div>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:22px;font-size:11px">
+    <thead>
+      <tr style="background:#0f1f3d">
+        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left;font-weight:600">Saluran</th>
+        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Masuk</th>
+        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Engaged</th>
+        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Tidak Engage</th>
+        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Engage Rate</th>
+      </tr>
+    </thead>
+    <tbody id="po-ch-body"></tbody>
+  </table>
+  <div id="po-days-section"></div>
+  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Catatan</div>
+  <div id="po-note" style="border:1px solid #dde3f0;border-radius:7px;padding:12px 14px;min-height:50px;font-size:12px;color:#1a2540;line-height:1.6;white-space:pre-wrap;font-family:Arial,sans-serif"></div>
+  <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e8f0;display:flex;justify-content:space-between;font-size:9px;color:#8a97b0">
+    <div>Disediakan: <strong id="po-prep"></strong></div>
+    <div>Jana: <strong id="po-gen"></strong></div>
+    <div>SULIT — Kegunaan Dalaman Sahaja</div>
+  </div>
+</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -660,7 +693,7 @@ function genDailyPDF(rec){
   const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
   document.getElementById('po-title').textContent='Laporan Harian CS';
   document.getElementById('po-badge').textContent='Daily Report';
-  document.getElementById('po-meta').innerHTML=`<div>Tarikh: <span>${fmtDate(rec.report_date)}</span></div><div>Staf: <span>${rec.staff_name}</span></div><div>Shift: <span>${rec.shift||'—'}</span></div>`;
+  document.getElementById('po-meta').innerHTML=`<div style='margin-right:16px;font-size:11px;color:rgba(255,255,255,.6)'>Tarikh: <span style='color:#fff;font-weight:500'>${fmtDate(rec.report_date)}</span></div><div style='margin-right:16px;font-size:11px;color:rgba(255,255,255,.6)'>Staf: <span style='color:#fff;font-weight:500'>${rec.staff_name}</span></div><div style='font-size:11px;color:rgba(255,255,255,.6)'>Shift: <span style='color:#fff;font-weight:500'>${rec.shift||'—'}</span></div>`;
   document.getElementById('po-tot').textContent=tM;document.getElementById('po-eng').textContent=tE;document.getElementById('po-rate').textContent=tR!==null?tR+'%':'—';
   document.getElementById('po-extra-num').textContent='—';document.getElementById('po-extra-label').textContent='';
   document.getElementById('po-days-section').innerHTML='';
@@ -827,66 +860,83 @@ function renderAgg(records,prefix,showDays=false){
   html+=`<tr><td><strong>JUMLAH</strong></td><td><strong>${agg.tM}</strong></td><td><strong>${agg.tE}</strong></td><td><strong>${tMiss}</strong></td><td><span class="rate-badge ${rc(agg.tR)}">${agg.tR!==null?agg.tR+'%':'—'}</span></td>${showDays?'<td>—</td>':''}</tr>`;
   document.getElementById(prefix+'-agg-body').innerHTML=html;
 }
+function rateStyle(r){
+  if(r===null)return'background:#f0f2f5;color:#8a97b0';
+  if(r>=90)return'background:#e6f7ee;color:#1a7a4a';
+  if(r>=70)return'background:#fdf3e0;color:#b07800';
+  return'background:#fdecea;color:#c0392b';
+}
 function buildPDFChTable(rows){
+  const td='padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:center;font-size:11px;color:#1a2540';
+  const tdL='padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:left;font-size:11px;color:#1a2540';
   let html='';
   rows.forEach((r,i)=>{
     const ch=CH[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
-    html+=`<tr><td><span class="pdot" style="background:${ch.color}"></span><strong>${ch.name}</strong><br><span style="color:#8a97b0;font-size:10px">${ch.type}</span></td><td>${r.masuk}</td><td>${r.engaged}</td><td>${Math.max(0,r.masuk-r.engaged)}</td><td><span class="pr ${prc(rate)}">${rate!==null?rate+'%':'—'}</span></td></tr>`;
+    html+=`<tr>
+      <td style="${tdL}"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${ch.color};margin-right:6px;vertical-align:middle"></span><strong>${ch.name}</strong><br><span style="color:#8a97b0;font-size:10px">${ch.type}</span></td>
+      <td style="${td}">${r.masuk}</td>
+      <td style="${td}">${r.engaged}</td>
+      <td style="${td}">${Math.max(0,r.masuk-r.engaged)}</td>
+      <td style="${td}"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;${rateStyle(rate)}">${rate!==null?rate+'%':'—'}</span></td>
+    </tr>`;
   });
   const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
-  html+=`<tr><td><strong>JUMLAH KESELURUHAN</strong></td><td><strong>${tM}</strong></td><td><strong>${tE}</strong></td><td><strong>${Math.max(0,tM-tE)}</strong></td><td><span class="pr ${prc(tR)}">${tR!==null?tR+'%':'—'}</span></td></tr>`;
+  const tdT='padding:8px 10px;text-align:center;font-size:11px;font-weight:700;background:#f0f4ff;border-top:2px solid #2557a7;color:#0f1f3d';
+  const tdTL='padding:8px 10px;text-align:left;font-size:11px;font-weight:700;background:#f0f4ff;border-top:2px solid #2557a7;color:#0f1f3d';
+  html+=`<tr>
+    <td style="${tdTL}">JUMLAH KESELURUHAN</td>
+    <td style="${tdT}">${tM}</td>
+    <td style="${tdT}">${tE}</td>
+    <td style="${tdT}">${Math.max(0,tM-tE)}</td>
+    <td style="${tdT}"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;${rateStyle(tR)}">${tR!==null?tR+'%':'—'}</span></td>
+  </tr>`;
   document.getElementById('po-ch-body').innerHTML=html;
 }
 function runPDF(filename){
   const el=document.getElementById('pdf-out');
-
-  // Show generating toast
   const t=document.getElementById('toast');
   t.textContent='⏳ Menyediakan PDF... sila tunggu';
   t.classList.add('show');
 
-  // Place el visible but off-screen so fonts & layout render properly
-  el.style.cssText='display:block;position:fixed;left:0;top:0;z-index:-1;opacity:0;width:794px;';
+  // Show element fully visible in normal flow temporarily
+  el.style.cssText='display:block;position:absolute;left:-9999px;top:0;width:794px;background:#fff;';
 
-  // Wait for fonts, images and full layout paint
-  document.fonts.ready.then(()=>{
-    // Extra delay to let html2canvas capture full content
-    setTimeout(()=>{
-      const opt={
+  setTimeout(()=>{
+    html2pdf()
+      .set({
         margin:0,
-        filename,
-        image:{type:'png',quality:1},
+        filename:filename,
+        image:{type:'jpeg',quality:0.95},
         html2canvas:{
           scale:2,
           useCORS:true,
+          allowTaint:false,
           logging:false,
-          letterRendering:true,
-          allowTaint:true,
           width:794,
           windowWidth:794,
-          scrollY:0,
-          scrollX:0,
-          onclone:(doc)=>{
-            // Make sure cloned element is fully visible
-            const cloned=doc.getElementById('pdf-out');
-            if(cloned) cloned.style.cssText='display:block;position:static;opacity:1;width:794px;';
+          onclone:function(clonedDoc){
+            const clonedEl=clonedDoc.getElementById('pdf-out');
+            if(clonedEl){
+              clonedEl.style.cssText='display:block!important;position:static!important;left:0!important;opacity:1!important;width:794px!important;background:#fff!important;';
+            }
           }
         },
-        jsPDF:{unit:'px',format:'a4',orientation:'portrait',hotfixes:['px_scaling']},
-        pagebreak:{mode:['avoid-all']}
-      };
-      html2pdf().set(opt).from(el).save().then(()=>{
+        jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+      })
+      .from(el)
+      .save()
+      .then(function(){
         el.style.cssText='display:none;';
         t.classList.remove('show');
         toast('✅ PDF berjaya dimuat turun!');
-      }).catch(err=>{
+      })
+      .catch(function(err){
         el.style.cssText='display:none;';
         t.classList.remove('show');
-        toast('❌ Gagal jana PDF: '+err.message);
-        console.error(err);
+        console.error('PDF error:',err);
+        toast('❌ Cuba semula');
       });
-    }, 1500);
-  });
+  }, 2000);
 }
 
 dRecalc();
