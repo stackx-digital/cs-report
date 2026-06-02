@@ -512,12 +512,22 @@ function saveCfg(url,key){localStorage.setItem('sb_url',url);localStorage.setIte
 
 // ── SUPABASE API ──
 async function sbFetch(path,opts={}){
-  const{url,key}=getCfg();
+  const url=SB_URL;
+  const key=SB_KEY;
+  console.log('[sbFetch] url:', url);
+  console.log('[sbFetch] key prefix:', key?key.substring(0,20):'EMPTY');
   if(!url||!key)throw new Error('Supabase belum dikonfigurasi');
-  const res=await fetch(url+'/rest/v1/'+path,{
-    headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=representation',...(opts.headers||{})},
-    ...opts
-  });
+  const headers={
+    'apikey':key,
+    'Authorization':'Bearer '+key,
+    'Content-Type':'application/json',
+    'Prefer':'return=representation'
+  };
+  if(opts.headers){Object.assign(headers,opts.headers);}
+  const fetchOpts={...opts,headers};
+  delete fetchOpts.headers;
+  fetchOpts.headers=headers;
+  const res=await fetch(url+'/rest/v1/'+path,fetchOpts);
   if(!res.ok){const e=await res.text();throw new Error(e);}
   return res.status===204?null:res.json();
 }
@@ -558,9 +568,6 @@ document.getElementById('hdr-date').textContent=today.toLocaleDateString('ms-MY'
 document.getElementById('d-date').value=today.toISOString().split('T')[0];
 (function(){const d=new Date(today);const day=d.getDay()||7;d.setDate(d.getDate()-day+1);document.getElementById('w-from').value=d.toISOString().split('T')[0];const d2=new Date(d);d2.setDate(d.getDate()+4);document.getElementById('w-to').value=d2.toISOString().split('T')[0];})();
 document.getElementById('m-month').value=today.toISOString().slice(0,7);
-const cfg=getCfg();
-if(cfg.url)document.getElementById('cfg-url').value=cfg.url;
-if(cfg.key)document.getElementById('cfg-key').value=cfg.key;
 checkConn();
 
 // ── HELPERS ──
