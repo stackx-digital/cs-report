@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CS Report System — NGO</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{--navy:#0f1f3d;--navy-mid:#1a3260;--blue:#2557a7;--accent:#e8a020;--accent-light:#fdf3e0;--green:#1a7a4a;--green-light:#e6f7ee;--red:#c0392b;--red-light:#fdecea;--bg:#f4f6fb;--surface:#fff;--border:#dde3f0;--text:#1a2540;--text-secondary:#5a6a8a;--text-muted:#8a97b0;--radius:12px;--shadow:0 2px 16px rgba(15,31,61,.08)}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -81,54 +80,18 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .agg-table tbody tr:nth-child(even) td{background:#fafbfd}
 .empty-state{text-align:center;padding:40px 20px;color:var(--text-muted)}
 .empty-icon{font-size:36px;margin-bottom:10px}.empty-text{font-size:14px}
-.info-box{background:#eef4ff;border:1px solid #c7d9f5;border-radius:8px;padding:10px 14px;font-size:12px;color:#2557a7;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start}
-.warn-box{background:#fff8e6;border:1px solid #fce096;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:12px}
+.info-box{background:#eef4ff;border:1px solid #c7d9f5;border-radius:8px;padding:10px 14px;font-size:12px;color:#2557a7;margin-bottom:12px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;font-weight:500;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(15,31,61,.3)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.code-block{background:#1e2a3a;color:#a8d8a8;font-family:'DM Mono',monospace;font-size:12px;padding:10px 14px;border-radius:8px;margin-top:8px;word-break:break-all}
 .setup-step{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
 .setup-step:last-child{border-bottom:none}
 .step-num{width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;margin-top:2px}
 .step-body{flex:1}
 .step-title{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:4px}
 .step-desc{font-size:13px;color:var(--text-secondary);line-height:1.6}
-.code-block{background:#1e2a3a;color:#a8d8a8;font-family:'DM Mono',monospace;font-size:12px;padding:10px 14px;border-radius:8px;margin-top:8px;word-break:break-all;position:relative}
-.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);font-size:11px;padding:3px 8px;border-radius:4px;cursor:pointer}
-.copy-btn:hover{background:rgba(255,255,255,.2)}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:11px 20px;border-radius:30px;font-size:13px;font-weight:500;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;box-shadow:0 8px 24px rgba(15,31,61,.3)}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:4px}
-@keyframes spin{to{transform:rotate(360deg)}}
-#pdf-out{display:none;font-family:Arial,sans-serif;background:#fff;width:794px;padding:0;box-sizing:border-box}
-.ph{background:#0f1f3d;padding:24px 32px 20px;color:#fff}
-.ph-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.ph-org{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.ph-title{font-family:Georgia,serif;font-size:24px;color:#fff}
-.ph-badge{background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;align-self:flex-start}
-.ph-meta{display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.55);flex-wrap:wrap}
-.ph-meta span{color:#fff;font-weight:500}
-.pb{padding:24px 32px}
-.psect{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid #e5e8f0}
-.psum{display:flex;gap:10px;margin-bottom:20px}
-.psb{flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center}
-.psn{font-family:'DM Serif Display',serif;font-size:26px;color:#0f1f3d;line-height:1}
-.psn.g{color:#1a7a4a}.psn.a{color:#b07800}
-.psl{font-size:9px;color:#5a6a8a;margin-top:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-.ptable{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:11px}
-.ptable thead tr{background:#0f1f3d}
-.ptable th{padding:8px 10px;color:rgba(255,255,255,.7);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left}
-.ptable th:not(:first-child){text-align:center}
-.ptable td{padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:center}
-.ptable td:first-child{text-align:left}
-.ptable tbody tr:last-child td{background:#f0f4ff;font-weight:700;border-top:1.5px solid #2557a7;border-bottom:none}
-.pr{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:600}
-.pr.h{background:#e6f7ee;color:#1a7a4a}.pr.m{background:#fdf3e0;color:#b07800}.pr.l{background:#fdecea;color:#c0392b}.pr.n{background:#f0f2f5;color:#8a97b0}
-.pnote{border:1px solid #dde3f0;border-radius:7px;padding:12px 14px;min-height:50px;font-size:12px;color:#1a2540;line-height:1.6;white-space:pre-wrap}
-.pfoot{margin-top:24px;padding-top:12px;border-top:1px solid #e5e8f0;display:flex;justify-content:space-between;font-size:9px;color:#8a97b0}
-.pdot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
-.pdays-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:10px}
-.pdays-table th{padding:6px 8px;background:#1a3260;color:rgba(255,255,255,.7);font-size:9px;text-transform:uppercase;letter-spacing:.04em;text-align:left}
-.pdays-table th:not(:first-child){text-align:center}
-.pdays-table td{padding:7px 8px;border-bottom:1px solid #edf0f7;text-align:center}
-.pdays-table td:first-child{text-align:left}
-.pdays-table tbody tr:nth-child(even) td{background:#fafbfd}
 </style>
 </head>
 <body>
@@ -157,7 +120,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
 <div class="container">
 
-<!-- ══════ DAILY ══════ -->
+<!-- DAILY -->
 <div class="panel active" id="panel-daily">
   <div class="page-title">Laporan Harian</div>
   <p class="page-sub">Isi data hari ini dan simpan ke sistem.</p>
@@ -235,7 +198,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   </div>
 </div>
 
-<!-- ══════ WEEKLY ══════ -->
+<!-- WEEKLY -->
 <div class="panel" id="panel-weekly">
   <div class="page-title">Laporan Mingguan</div>
   <p class="page-sub">Aggregat automatik dari data harian yang disimpan.</p>
@@ -254,15 +217,9 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group">
-          <label>Cari Nama</label>
-          <input type="text" id="w-staff-search" placeholder="Taip nama staf..." oninput="wLoad()">
-        </div>
-        <div class="field-group">
-          <label>Pilih Staf</label>
-          <select id="w-staff-select" onchange="syncStaffFilter('w');wLoad()">
-            <option value="">— Semua Staf —</option>
-          </select>
+        <div class="field-group"><label>Cari Nama</label><input type="text" id="w-staff-search" placeholder="Taip nama staf..." oninput="wLoad()"></div>
+        <div class="field-group"><label>Pilih Staf</label>
+          <select id="w-staff-select" onchange="syncStaffFilter('w');wLoad()"><option value="">— Semua Staf —</option></select>
         </div>
       </div>
     </div>
@@ -294,7 +251,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   <div id="w-empty" class="empty-state"><div class="empty-icon">📆</div><div class="empty-text">Pilih tarikh untuk muat data</div></div>
 </div>
 
-<!-- ══════ MONTHLY ══════ -->
+<!-- MONTHLY -->
 <div class="panel" id="panel-monthly">
   <div class="page-title">Laporan Bulanan</div>
   <p class="page-sub">Aggregat automatik untuk satu bulan penuh.</p>
@@ -312,15 +269,9 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group">
-          <label>Cari Nama</label>
-          <input type="text" id="m-staff-search" placeholder="Taip nama staf..." oninput="mLoad()">
-        </div>
-        <div class="field-group">
-          <label>Pilih Staf</label>
-          <select id="m-staff-select" onchange="syncStaffFilter('m');mLoad()">
-            <option value="">— Semua Staf —</option>
-          </select>
+        <div class="field-group"><label>Cari Nama</label><input type="text" id="m-staff-search" placeholder="Taip nama staf..." oninput="mLoad()"></div>
+        <div class="field-group"><label>Pilih Staf</label>
+          <select id="m-staff-select" onchange="syncStaffFilter('m');mLoad()"><option value="">— Semua Staf —</option></select>
         </div>
       </div>
     </div>
@@ -352,7 +303,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   <div id="m-empty" class="empty-state"><div class="empty-icon">🗓️</div><div class="empty-text">Pilih bulan untuk muat data</div></div>
 </div>
 
-<!-- ══════ HISTORY ══════ -->
+<!-- HISTORY -->
 <div class="panel" id="panel-history">
   <div class="page-title">Rekod Harian</div>
   <p class="page-sub">Semua laporan harian dari semua staf.</p>
@@ -360,221 +311,87 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group">
-          <label>Cari Nama</label>
-          <input type="text" id="h-staff-search" placeholder="Taip nama staf..." oninput="renderHistory()">
-        </div>
-        <div class="field-group">
-          <label>Pilih Staf</label>
-          <select id="h-staff-select" onchange="syncStaffFilter('h');renderHistory()">
-            <option value="">— Semua Staf —</option>
-          </select>
+        <div class="field-group"><label>Cari Nama</label><input type="text" id="h-staff-search" placeholder="Taip nama staf..." oninput="renderHistory()"></div>
+        <div class="field-group"><label>Pilih Staf</label>
+          <select id="h-staff-select" onchange="syncStaffFilter('h');renderHistory()"><option value="">— Semua Staf —</option></select>
         </div>
       </div>
     </div>
   </div>
   <div class="btn-row" style="margin-bottom:14px">
     <button class="btn btn-secondary" onclick="exportCSV()">📤 Export CSV</button>
-    <button class="btn btn-secondary" id="btn-refresh-hist" onclick="renderHistory()">🔄 Refresh</button>
+    <button class="btn btn-secondary" onclick="renderHistory()">🔄 Refresh</button>
   </div>
   <div id="hist-loading" style="display:none;text-align:center;padding:20px;color:var(--text-secondary);font-size:13px"><span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Memuatkan rekod...</div>
-  <div class="card" id="hist-card">
+  <div class="card" id="hist-card" style="display:none">
     <table class="hist-table">
       <thead><tr><th>Tarikh</th><th>Staf</th><th>Shift</th><th>Masuk</th><th>Engaged</th><th>Rate</th><th>Catatan</th><th></th></tr></thead>
       <tbody id="hist-body"></tbody>
     </table>
   </div>
-  <div id="hist-empty" class="empty-state" style="display:none"><div class="empty-icon">🗃️</div><div class="empty-text">Tiada rekod lagi.</div></div>
+  <div id="hist-empty" class="empty-state"><div class="empty-icon">🗃️</div><div class="empty-text">Tiada rekod lagi.</div></div>
 </div>
 
-<!-- ══════ SETUP ══════ -->
+<!-- SETUP -->
 <div class="panel" id="panel-setup">
-  <div class="page-title">Setup Supabase</div>
-  <p class="page-sub">Sambungkan webapp ke database Supabase supaya semua staf kongsi data yang sama.</p>
-
+  <div class="page-title">Setup</div>
+  <p class="page-sub">Maklumat sambungan sistem.</p>
   <div style="background:#e6f7ee;border:1px solid #a3d9b1;border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
     <span style="font-size:20px">✅</span>
     <div>
       <div style="font-weight:600;color:#1a7a4a;font-size:14px">Supabase Tersambung</div>
-      <div style="font-size:12px;color:#2d8a50;margin-top:2px">Database dikonfigurasi terus dalam sistem. Semua device boleh guna tanpa setup tambahan.</div>
+      <div style="font-size:12px;color:#2d8a50;margin-top:2px">Database dikonfigurasi terus dalam sistem.</div>
     </div>
   </div>
-
   <div class="card">
     <div class="card-header"><div class="card-icon" style="background:#eef2ff">🔑</div><div class="card-title">Info Sambungan</div></div>
     <div class="card-body">
       <div style="display:flex;flex-direction:column;gap:8px">
         <div style="display:flex;gap:10px;align-items:center">
           <span style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;width:80px">URL</span>
-          <span style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace;background:#f0f2f5;padding:4px 10px;border-radius:6px">https://slrlxpzruetnpfhwmwdz.supabase.co</span>
+          <span style="font-size:12px;color:var(--text);font-family:'DM Mono',monospace;background:#f0f2f5;padding:4px 10px;border-radius:6px">https://slrlxpzruetnpfhwmwdz.supabase.co</span>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <span style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;width:80px">Key</span>
-          <span style="font-size:13px;color:var(--text-muted);font-family:'DM Mono',monospace;background:#f0f2f5;padding:4px 10px;border-radius:6px">eyJ••••••••••••••••••••••</span>
+          <span style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;width:80px">Status</span>
+          <span id="setup-status" style="font-size:12px;color:var(--text-secondary)">Checking...</span>
         </div>
       </div>
       <div style="margin-top:12px">
-        <button class="btn btn-secondary" style="font-size:12px" onclick="checkConn()">🔄 Test Sambungan</button>
+        <button class="btn btn-secondary" style="font-size:12px" onclick="checkConn(true)">🔄 Test Sambungan</button>
       </div>
-      <div id="test-result" style="margin-top:10px;font-size:13px;display:none"></div>
     </div>
   </div>
-
-  <div style="display:none">
-    <input type="url" id="cfg-url">
-    <input type="password" id="cfg-key">
-  </div>
-
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📋</div><div class="card-title">Panduan Setup Langkah Demi Langkah</div></div>
+    <div class="card-header"><div class="card-icon" style="background:#f0fdf4">📋</div><div class="card-title">SQL untuk Buat Table</div></div>
     <div class="card-body">
-
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Buat akaun Supabase (percuma)</div>
-          <div class="step-desc">Pergi ke <strong>supabase.com</strong> → klik <strong>Start your project</strong> → daftar dengan Google atau email. Akaun percuma sudah cukup (500MB).</div>
-        </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Buat projek baru</div>
-          <div class="step-desc">Klik <strong>New Project</strong> → pilih nama (contoh: <em>cs-ngo-report</em>) → set password database → pilih region <strong>Southeast Asia (Singapore)</strong> → klik <strong>Create new project</strong>. Tunggu 1-2 minit.</div>
-        </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Buat table dalam database</div>
-          <div class="step-desc">Di dashboard Supabase → klik <strong>SQL Editor</strong> (ikon terminal) → klik <strong>New query</strong> → copy-paste SQL di bawah → klik <strong>Run</strong>.</div>
-          <div class="code-block" id="sql-block">CREATE TABLE cs_daily_reports (
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:8px">Jalankan SQL ini dalam Supabase SQL Editor jika belum buat table:</p>
+      <div class="code-block" id="sql-block">CREATE TABLE cs_daily_reports (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   report_date date NOT NULL,
   staff_name text NOT NULL,
   shift text,
-  wa1_masuk int DEFAULT 0,
-  wa1_engaged int DEFAULT 0,
-  wa2_masuk int DEFAULT 0,
-  wa2_engaged int DEFAULT 0,
-  wa3_masuk int DEFAULT 0,
-  wa3_engaged int DEFAULT 0,
-  em1_masuk int DEFAULT 0,
-  em1_engaged int DEFAULT 0,
-  em2_masuk int DEFAULT 0,
-  em2_engaged int DEFAULT 0,
+  wa1_masuk int DEFAULT 0, wa1_engaged int DEFAULT 0,
+  wa2_masuk int DEFAULT 0, wa2_engaged int DEFAULT 0,
+  wa3_masuk int DEFAULT 0, wa3_engaged int DEFAULT 0,
+  em1_masuk int DEFAULT 0, em1_engaged int DEFAULT 0,
+  em2_masuk int DEFAULT 0, em2_engaged int DEFAULT 0,
   notes text,
   created_at timestamptz DEFAULT now()
 );
-
 ALTER TABLE cs_daily_reports ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Allow all" ON cs_daily_reports
   FOR ALL USING (true) WITH CHECK (true);</div>
-          <button class="btn btn-secondary" style="margin-top:8px;font-size:12px" onclick="copySQL()">📋 Copy SQL</button>
-        </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Dapatkan URL dan API Key</div>
-          <div class="step-desc">Di dashboard Supabase → klik <strong>Project Settings</strong> (gear icon) → klik <strong>API</strong> → copy dua nilai:<br><br>
-          • <strong>Project URL</strong> — contoh: <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">https://abcdefgh.supabase.co</code><br>
-          • <strong>anon public</strong> key — bermula dengan <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">eyJ...</code></div>
-        </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <div class="step-title">Masukkan credentials di atas</div>
-          <div class="step-desc">Paste URL dan Key dalam borang di atas → klik <strong>Simpan & Test Sambungan</strong>. Kalau berjaya, badge header akan tukar kepada hijau ✅.</div>
-        </div>
-      </div>
-
-      <div class="setup-step">
-        <div class="step-num">6</div>
-        <div class="step-body">
-          <div class="step-title">Deploy ke Cloudflare Pages</div>
-          <div class="step-desc">
-          1. Pergi ke <strong>pages.cloudflare.com</strong> → Log in / daftar percuma<br>
-          2. Klik <strong>Create a project</strong> → pilih <strong>Direct Upload</strong><br>
-          3. Nama projek: <em>cs-ngo-report</em> → klik <strong>Create project</strong><br>
-          4. Upload fail <strong>cs-report-v2.html</strong> → rename jadi <strong>index.html</strong> sebelum upload<br>
-          5. Klik <strong>Deploy site</strong><br>
-          6. URL anda akan jadi: <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px">cs-ngo-report.pages.dev</code><br><br>
-          <strong>Nota penting:</strong> Credentials Supabase disimpan dalam localStorage setiap browser. Staf perlu buka Setup tab dan masukkan credentials sekali pada device masing-masing.</div>
-        </div>
-      </div>
-
+      <button class="btn btn-secondary" style="margin-top:8px;font-size:12px" onclick="copySQL()">📋 Copy SQL</button>
     </div>
   </div>
 </div>
 
-</div><!-- /container -->
-
-<!-- PDF OUTPUT -->
-<div id="pdf-out">
-<div style="background:#0f1f3d;padding:24px 32px 20px;color:#fff;font-family:Arial,sans-serif">
-  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-    <div>
-      <div style="font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">[NAMA NGO] — Customer Service Division</div>
-      <div id="po-title" style="font-family:Georgia,serif;font-size:24px;color:#fff;font-weight:bold"></div>
-    </div>
-    <div id="po-badge" style="background:#e8a020;color:#0f1f3d;font-size:10px;font-weight:700;padding:5px 14px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap"></div>
-  </div>
-  <div id="po-meta" style="display:flex;gap:18px;font-size:11px;color:rgba(255,255,255,.6);flex-wrap:wrap"></div>
-</div>
-<div style="padding:24px 32px;background:#fff;font-family:Arial,sans-serif">
-  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Ringkasan Keseluruhan</div>
-  <div style="display:flex;gap:10px;margin-bottom:22px">
-    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
-      <div id="po-tot" style="font-family:Georgia,serif;font-size:28px;color:#0f1f3d;line-height:1;font-weight:bold"></div>
-      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Jumlah Masuk</div>
-    </div>
-    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
-      <div id="po-eng" style="font-family:Georgia,serif;font-size:28px;color:#1a7a4a;line-height:1;font-weight:bold"></div>
-      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Berjaya Engage</div>
-    </div>
-    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
-      <div id="po-rate" style="font-family:Georgia,serif;font-size:28px;color:#b07800;line-height:1;font-weight:bold"></div>
-      <div style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase">Engage Rate</div>
-    </div>
-    <div style="flex:1;border:1px solid #dde3f0;border-radius:7px;padding:12px;text-align:center">
-      <div id="po-extra-num" style="font-family:Georgia,serif;font-size:22px;color:#0f1f3d;line-height:1;font-weight:bold"></div>
-      <div id="po-extra-label" style="font-size:9px;color:#5a6a8a;margin-top:4px;font-weight:600;text-transform:uppercase"></div>
-    </div>
-  </div>
-  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Data Per Saluran</div>
-  <table style="width:100%;border-collapse:collapse;margin-bottom:22px;font-size:11px">
-    <thead>
-      <tr style="background:#0f1f3d">
-        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:left;font-weight:600">Saluran</th>
-        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Masuk</th>
-        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Engaged</th>
-        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Tidak Engage</th>
-        <th style="padding:8px 10px;color:rgba(255,255,255,.75);font-size:9px;text-transform:uppercase;letter-spacing:.05em;text-align:center;font-weight:600">Engage Rate</th>
-      </tr>
-    </thead>
-    <tbody id="po-ch-body"></tbody>
-  </table>
-  <div id="po-days-section"></div>
-  <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#5a6a8a;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #e5e8f0">Catatan</div>
-  <div id="po-note" style="border:1px solid #dde3f0;border-radius:7px;padding:12px 14px;min-height:50px;font-size:12px;color:#1a2540;line-height:1.6;white-space:pre-wrap;font-family:Arial,sans-serif"></div>
-  <div style="margin-top:24px;padding-top:12px;border-top:1px solid #e5e8f0;display:flex;justify-content:space-between;font-size:9px;color:#8a97b0">
-    <div>Disediakan: <strong id="po-prep"></strong></div>
-    <div>Jana: <strong id="po-gen"></strong></div>
-    <div>SULIT — Kegunaan Dalaman Sahaja</div>
-  </div>
-</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+// ── CONSTANTS ──
 const CH=[
   {key:'wa1',name:'WhatsApp 1',type:'Pertanyaan Umum',color:'#3b82f6'},
   {key:'wa2',name:'WhatsApp 2',type:'Aduan & Sokongan',color:'#f59e0b'},
@@ -583,61 +400,67 @@ const CH=[
   {key:'em2',name:'Email 2',type:'Laporan & Maklumbalas',color:'#ec4899'},
 ];
 
-// ── CONFIG ──
+// ── FIX 1: Hardcoded credentials — no localStorage needed ──
 const SB_URL='https://slrlxpzruetnpfhwmwdz.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNscmx4cHpydWV0bnBmaHdtd2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjgzODEsImV4cCI6MjA5NTk0NDM4MX0.IzVJT5VZ3ChwBQwiBGE0tKZVmgejwzDW8DgCRhKJuz0';
-function getCfg(){return{url:SB_URL,key:SB_KEY};}
-function saveCfg(url,key){localStorage.setItem('sb_url',url);localStorage.setItem('sb_key',key);}
 
-// ── SUPABASE API ──
-async function sbFetch(path,opts={}){
-  const url=SB_URL;
-  const key=SB_KEY;
-  console.log('[sbFetch] url:', url);
-  console.log('[sbFetch] key prefix:', key?key.substring(0,20):'EMPTY');
-  if(!url||!key)throw new Error('Supabase belum dikonfigurasi');
+// ── FIX 2: Clean sbFetch — no header conflict ──
+async function sbFetch(path, method='GET', body=null, extraHeaders={}){
   const headers={
-    'apikey':key,
-    'Authorization':'Bearer '+key,
-    'Content-Type':'application/json',
-    'Prefer':'return=representation'
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer '+SB_KEY,
+    'Content-Type': 'application/json',
+    'Prefer': 'return=representation',
+    ...extraHeaders
   };
-  if(opts.headers){Object.assign(headers,opts.headers);}
-  const fetchOpts={...opts,headers};
-  delete fetchOpts.headers;
-  fetchOpts.headers=headers;
-  const res=await fetch(url+'/rest/v1/'+path,fetchOpts);
-  if(!res.ok){const e=await res.text();throw new Error(e);}
-  return res.status===204?null:res.json();
+  const opts={method, headers};
+  if(body) opts.body=JSON.stringify(body);
+  const res=await fetch(SB_URL+'/rest/v1/'+path, opts);
+  if(!res.ok){
+    const err=await res.text();
+    throw new Error(err);
+  }
+  return res.status===204 ? null : res.json();
 }
 
 async function insertRecord(rec){
-  return sbFetch('cs_daily_reports',{method:'POST',body:JSON.stringify(rec)});
+  return sbFetch('cs_daily_reports','POST',rec);
 }
 
 async function fetchRecords(from,to){
-  let q=`cs_daily_reports?order=report_date.desc`;
-  if(from)q+=`&report_date=gte.${from}`;
-  if(to)q+=`&report_date=lte.${to}`;
-  return sbFetch(q,{headers:{'Range':'0-999'}});
+  let q='cs_daily_reports?order=report_date.desc&limit=1000';
+  if(from) q+=`&report_date=gte.${from}`;
+  if(to)   q+=`&report_date=lte.${to}`;
+  return sbFetch(q);
 }
 
 async function deleteRecord(id){
-  return sbFetch(`cs_daily_reports?id=eq.${id}`,{method:'DELETE'});
+  return sbFetch(`cs_daily_reports?id=eq.${id}`,'DELETE');
 }
 
-// ── CONNECTION CHECK ──
-async function checkConn(){
+// ── FIX 3: checkConn with proper async handling ──
+async function checkConn(showInSetup=false){
   const badge=document.getElementById('conn-badge');
-  const res=document.getElementById('test-result');
-  badge.className='conn-badge conn-loading';badge.textContent='⏳ Connecting...';
+  badge.className='conn-badge conn-loading';
+  badge.textContent='⏳ Connecting...';
   try{
     await sbFetch('cs_daily_reports?limit=1');
-    badge.className='conn-badge conn-ok';badge.textContent='✅ Connected';
-    if(res){res.style.display='block';res.innerHTML='✅ <strong>Berjaya!</strong> Sambungan ke Supabase OK.';res.style.color='var(--green)';}
+    badge.className='conn-badge conn-ok';
+    badge.textContent='✅ Connected';
+    if(showInSetup){
+      const s=document.getElementById('setup-status');
+      if(s){s.textContent='✅ Sambungan OK';s.style.color='var(--green)';}
+      toast('✅ Sambungan Supabase OK!');
+    }
   }catch(e){
-    badge.className='conn-badge conn-err';badge.textContent='❌ Gagal';
-    if(res){res.style.display='block';res.innerHTML='❌ <strong>Gagal:</strong> '+e.message;res.style.color='var(--red)';}
+    badge.className='conn-badge conn-err';
+    badge.textContent='❌ Gagal';
+    if(showInSetup){
+      const s=document.getElementById('setup-status');
+      if(s){s.textContent='❌ Gagal: '+e.message;s.style.color='var(--red)';}
+      toast('❌ Gagal: '+e.message);
+    }
+    console.error('checkConn error:',e.message);
   }
 }
 
@@ -645,15 +468,24 @@ async function checkConn(){
 const today=new Date();
 document.getElementById('hdr-date').textContent=today.toLocaleDateString('ms-MY',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 document.getElementById('d-date').value=today.toISOString().split('T')[0];
-(function(){const d=new Date(today);const day=d.getDay()||7;d.setDate(d.getDate()-day+1);document.getElementById('w-from').value=d.toISOString().split('T')[0];const d2=new Date(d);d2.setDate(d.getDate()+4);document.getElementById('w-to').value=d2.toISOString().split('T')[0];})();
 document.getElementById('m-month').value=today.toISOString().slice(0,7);
+// Set weekly default Mon-Fri
+(function(){
+  const d=new Date(today);const day=d.getDay()||7;
+  d.setDate(d.getDate()-day+1);
+  document.getElementById('w-from').value=d.toISOString().split('T')[0];
+  const d2=new Date(d);d2.setDate(d.getDate()+4);
+  document.getElementById('w-to').value=d2.toISOString().split('T')[0];
+})();
+
+// FIX 3: Run checkConn async on load
 checkConn();
 
 // ── HELPERS ──
 function rc(v){if(v===null)return'rn';if(v>=90)return'rh';if(v>=70)return'rm';return'rl';}
-function prc(v){if(v===null)return'n';if(v>=90)return'h';if(v>=70)return'm';return'l';}
 function fmtDate(s){const d=new Date(s+'T00:00:00');return d.toLocaleDateString('ms-MY',{day:'numeric',month:'short',year:'numeric'});}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
+function copySQL(){navigator.clipboard.writeText(document.getElementById('sql-block').textContent);toast('📋 SQL disalin!');}
 
 function switchTab(name,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
@@ -663,14 +495,6 @@ function switchTab(name,btn){
   if(name==='history'){loadStaffNames();renderHistory();}
   if(name==='weekly'){loadStaffNames();wLoad();}
   if(name==='monthly'){loadStaffNames();mLoad();}
-}
-
-// ── SETUP ──
-function saveConfig(){}
-function clearConfig(){}
-function copySQL(){
-  navigator.clipboard.writeText(document.getElementById('sql-block').textContent);
-  toast('📋 SQL disalin!');
 }
 
 // ── DAILY ──
@@ -699,25 +523,66 @@ function dReset(){
   document.getElementById('d-name').value='';document.getElementById('d-notes').value='';
   document.getElementById('d-shift').selectedIndex=2;
   document.getElementById('d-date').value=today.toISOString().split('T')[0];
-  document.querySelectorAll('.num-input').forEach(i=>i.value=0);dRecalc();toast('↺ Borang diset semula');
+  document.querySelectorAll('.num-input').forEach(i=>i.value=0);
+  dRecalc();toast('↺ Borang diset semula');
 }
-async function dSaveAndPDF(){await dSaveOnly();}
-function dPDFonly(){}
+async function dSaveOnly(){
+  const name=document.getElementById('d-name').value.trim();
+  const dateVal=document.getElementById('d-date').value;
+  if(!name){toast('⚠️ Sila isi nama staf');return;}
+  if(!dateVal){toast('⚠️ Sila pilih tarikh');return;}
+  const rows=dGetRows();
+  const rec={
+    report_date:dateVal,staff_name:name,
+    shift:document.getElementById('d-shift').value,
+    notes:document.getElementById('d-notes').value.trim()||null,
+    wa1_masuk:rows[0].masuk,wa1_engaged:rows[0].engaged,
+    wa2_masuk:rows[1].masuk,wa2_engaged:rows[1].engaged,
+    wa3_masuk:rows[2].masuk,wa3_engaged:rows[2].engaged,
+    em1_masuk:rows[3].masuk,em1_engaged:rows[3].engaged,
+    em2_masuk:rows[4].masuk,em2_engaged:rows[4].engaged,
+  };
+  const btn=document.getElementById('btn-save');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Menyimpan...';
+  try{
+    await insertRecord(rec);
+    toast('💾 Rekod berjaya disimpan!');
+  }catch(e){
+    toast('❌ Gagal simpan: '+e.message);
+    console.error(e);
+  }finally{
+    btn.disabled=false;btn.innerHTML='💾 Simpan';
+  }
+}
 
-function genDailyPDF(rec){
-  const rows=rec.channels||mapChFromRec(rec);
-  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
-  document.getElementById('po-title').textContent='Laporan Harian CS';
-  document.getElementById('po-badge').textContent='Daily Report';
-  document.getElementById('po-meta').innerHTML=`<div style='margin-right:16px;font-size:11px;color:rgba(255,255,255,.6)'>Tarikh: <span style='color:#fff;font-weight:500'>${fmtDate(rec.report_date)}</span></div><div style='margin-right:16px;font-size:11px;color:rgba(255,255,255,.6)'>Staf: <span style='color:#fff;font-weight:500'>${rec.staff_name}</span></div><div style='font-size:11px;color:rgba(255,255,255,.6)'>Shift: <span style='color:#fff;font-weight:500'>${rec.shift||'—'}</span></div>`;
-  document.getElementById('po-tot').textContent=tM;document.getElementById('po-eng').textContent=tE;document.getElementById('po-rate').textContent=tR!==null?tR+'%':'—';
-  document.getElementById('po-extra-num').textContent='—';document.getElementById('po-extra-label').textContent='';
-  document.getElementById('po-days-section').innerHTML='';
-  buildPDFChTable(rows);
-  document.getElementById('po-note').textContent=rec.notes||'Tiada catatan.';
-  document.getElementById('po-prep').textContent=rec.staff_name;
-  document.getElementById('po-gen').textContent=new Date().toLocaleString('ms-MY');
-  runPDF(`CS-Daily-${rec.report_date}-${rec.staff_name.replace(/\s+/g,'-')}.pdf`);
+// ── STAFF FILTER ──
+function getStaffFilter(prefix){
+  const sel=(document.getElementById(prefix+'-staff-select')||{}).value||'';
+  const srch=(document.getElementById(prefix+'-staff-search')||{}).value||'';
+  return sel || srch.trim().toLowerCase();
+}
+function filterByStaff(records,prefix){
+  const f=getStaffFilter(prefix);
+  return f ? records.filter(r=>r.staff_name.toLowerCase().includes(f)) : records;
+}
+function syncStaffFilter(prefix){
+  const sel=document.getElementById(prefix+'-staff-select');
+  const srch=document.getElementById(prefix+'-staff-search');
+  if(sel&&srch) srch.value=sel.value;
+}
+async function loadStaffNames(){
+  try{
+    const records=await fetchRecords();
+    if(!records||!records.length)return;
+    const names=[...new Set(records.map(r=>r.staff_name).filter(Boolean))].sort();
+    ['w','m','h'].forEach(prefix=>{
+      const sel=document.getElementById(prefix+'-staff-select');
+      if(!sel)return;
+      const cur=sel.value;
+      sel.innerHTML='<option value="">— Semua Staf —</option>';
+      names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;if(n===cur)o.selected=true;sel.appendChild(o);});
+    });
+  }catch(e){console.log('loadStaffNames:',e.message);}
 }
 
 // ── WEEKLY ──
@@ -737,23 +602,19 @@ async function wLoad(){
       return;
     }
     document.getElementById('w-result').style.display='block';
-    const staffLabel=getStaffFilter('w');
     renderAgg(records,'w');
-    let html='';
-    records.forEach(r=>{
+    document.getElementById('w-days-body').innerHTML=records.map(r=>{
       const rows=mapChFromRec(r);
       const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;
-      html+=`<tr><td>${fmtDate(r.report_date)}</td><td><span style="background:#f0f2f5;padding:2px 8px;border-radius:10px;font-size:11px">${r.staff_name}</span></td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td><td style="color:var(--text-secondary);font-size:11px">${r.notes||'—'}</td></tr>`;
-    });
-    document.getElementById('w-days-body').innerHTML=html;
+      return`<tr><td>${fmtDate(r.report_date)}</td><td><span style="background:#f0f2f5;padding:2px 8px;border-radius:10px;font-size:11px">${r.staff_name}</span></td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td><td style="color:var(--text-secondary);font-size:11px">${r.notes||'—'}</td></tr>`;
+    }).join('');
   }catch(e){
     document.getElementById('w-loading').style.display='none';
     document.getElementById('w-empty').style.display='block';
-    document.getElementById('w-empty').querySelector('.empty-text').textContent='❌ Gagal muat data: '+e.message;
+    document.getElementById('w-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;
     toast('❌ '+e.message);
   }
 }
-async function wPDF(){await wCSV();}
 
 // ── MONTHLY ──
 async function mLoad(){
@@ -762,32 +623,36 @@ async function mLoad(){
   const[yr,mo]=month.split('-');
   const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
   document.getElementById('m-loading').style.display='block';
-  document.getElementById('m-result').style.display='none';document.getElementById('m-empty').style.display='none';
+  document.getElementById('m-result').style.display='none';
+  document.getElementById('m-empty').style.display='none';
   try{
     let records=await fetchRecords(from,to);
     records=filterByStaff(records,'m');
     document.getElementById('m-loading').style.display='none';
     if(!records||!records.length){
       document.getElementById('m-empty').style.display='block';
-      document.getElementById('m-empty').querySelector('.empty-text').textContent='Tiada data untuk bulan / staf yang dipilih';
+      document.getElementById('m-empty').querySelector('.empty-text').textContent='Tiada data untuk bulan / staf ini';
       return;
     }
     document.getElementById('m-result').style.display='block';
     renderAgg(records,'m',true);
-    let html='';
-    records.forEach(r=>{const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;html+=`<tr><td>${fmtDate(r.report_date)}</td><td><span style="background:#f0f2f5;padding:2px 8px;border-radius:10px;font-size:11px">${r.staff_name}</span></td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td></tr>`;});
-    document.getElementById('m-days-body').innerHTML=html;
+    document.getElementById('m-days-body').innerHTML=records.map(r=>{
+      const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;
+      return`<tr><td>${fmtDate(r.report_date)}</td><td><span style="background:#f0f2f5;padding:2px 8px;border-radius:10px;font-size:11px">${r.staff_name}</span></td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td></tr>`;
+    }).join('');
   }catch(e){
-    document.getElementById('m-loading').style.display='none';document.getElementById('m-empty').style.display='block';
-    document.getElementById('m-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;toast('❌ '+e.message);
+    document.getElementById('m-loading').style.display='none';
+    document.getElementById('m-empty').style.display='block';
+    document.getElementById('m-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;
+    toast('❌ '+e.message);
   }
 }
-async function mPDF(){await mCSV();}
 
 // ── HISTORY ──
 async function renderHistory(){
   document.getElementById('hist-loading').style.display='block';
-  document.getElementById('hist-card').style.display='none';document.getElementById('hist-empty').style.display='none';
+  document.getElementById('hist-card').style.display='none';
+  document.getElementById('hist-empty').style.display='none';
   try{
     let records=await fetchRecords();
     if(records&&records.length){
@@ -795,9 +660,9 @@ async function renderHistory(){
       ['w','m','h'].forEach(prefix=>{
         const sel=document.getElementById(prefix+'-staff-select');
         if(!sel)return;
-        const current=sel.value;
+        const cur=sel.value;
         sel.innerHTML='<option value="">— Semua Staf —</option>';
-        names.forEach(n=>{const opt=document.createElement('option');opt.value=n;opt.textContent=n;if(n===current)opt.selected=true;sel.appendChild(opt);});
+        names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;if(n===cur)o.selected=true;sel.appendChild(o);});
       });
     }
     records=filterByStaff(records,'h');
@@ -808,35 +673,23 @@ async function renderHistory(){
       return;
     }
     document.getElementById('hist-card').style.display='block';
-    document.getElementById('hist-body').innerHTML=records.map((r,idx)=>{
+    document.getElementById('hist-body').innerHTML=records.map(r=>{
       const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100):null;
       return`<tr><td>${fmtDate(r.report_date)}</td><td><span style="background:#f0f2f5;padding:2px 8px;border-radius:10px;font-size:11px">${r.staff_name}</span></td><td style="font-size:11px;color:var(--text-secondary)">${(r.shift||'').split('(')[0].trim()}</td><td>${tM}</td><td>${tE}</td><td><span class="rate-badge ${rc(rt)}" style="font-size:11px">${rt!==null?rt+'%':'—'}</span></td><td style="color:var(--text-secondary);font-size:11px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.notes||'—'}</td><td><button class="del-btn" onclick="delRecord('${r.id}')">✕</button></td></tr>`;
     }).join('');
   }catch(e){
-    document.getElementById('hist-loading').style.display='none';document.getElementById('hist-empty').style.display='block';
+    document.getElementById('hist-loading').style.display='none';
+    document.getElementById('hist-empty').style.display='block';
     document.getElementById('hist-empty').querySelector('.empty-text').textContent='❌ Gagal: '+e.message;
   }
 }
 async function delRecord(id){
   if(!confirm('Padam rekod ini?'))return;
   try{await deleteRecord(id);toast('🗑️ Rekod dipadam');renderHistory();}
-  catch(e){toast('❌ Gagal padam: '+e.message);}
-}
-async function exportCSV(){
-  try{
-    const records=await fetchRecords();
-    if(!records||!records.length){toast('⚠️ Tiada data');return;}
-    let csv='Tarikh,Nama,Shift,WA1 Masuk,WA1 Engaged,WA2 Masuk,WA2 Engaged,WA3 Masuk,WA3 Engaged,EM1 Masuk,EM1 Engaged,EM2 Masuk,EM2 Engaged,Jumlah Masuk,Jumlah Engaged,Engage Rate,Catatan\n';
-    records.forEach(r=>{
-      const rows=mapChFromRec(r);const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0),rt=tM>0?Math.round(tE/tM*100)+'%':'—';
-      csv+=`${r.report_date},"${r.staff_name}","${r.shift||''}",${r.wa1_masuk},${r.wa1_engaged},${r.wa2_masuk},${r.wa2_engaged},${r.wa3_masuk},${r.wa3_engaged},${r.em1_masuk},${r.em1_engaged},${r.em2_masuk},${r.em2_engaged},${tM},${tE},${rt},"${(r.notes||'').replace(/"/g,'""')}"\n`;
-    });
-    const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='CS-Records.csv';a.click();
-    toast('📤 CSV dieksport');
-  }catch(e){toast('❌ '+e.message);}
+  catch(e){toast('❌ '+e.message);}
 }
 
-// ── AGG ──
+// ── AGG HELPERS ──
 function mapChFromRec(r){
   return[
     {masuk:r.wa1_masuk||0,engaged:r.wa1_engaged||0},
@@ -848,184 +701,69 @@ function mapChFromRec(r){
 }
 function calcAgg(records){
   const ch=CH.map(()=>({masuk:0,engaged:0}));
-  records.forEach(r=>{const rows=mapChFromRec(r);rows.forEach((c,i)=>{ch[i].masuk+=c.masuk;ch[i].engaged+=c.engaged;});});
-  const tM=ch.reduce((s,c)=>s+c.masuk,0),tE=ch.reduce((s,c)=>s+c.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
-  return{ch,tM,tE,tR};
+  records.forEach(r=>{mapChFromRec(r).forEach((c,i)=>{ch[i].masuk+=c.masuk;ch[i].engaged+=c.engaged;});});
+  const tM=ch.reduce((s,c)=>s+c.masuk,0),tE=ch.reduce((s,c)=>s+c.engaged,0);
+  return{ch,tM,tE,tR:tM>0?Math.round(tE/tM*100):null};
 }
 function renderAgg(records,prefix,showDays=false){
   const agg=calcAgg(records);
   document.getElementById(prefix+'-tot').textContent=agg.tM;
   document.getElementById(prefix+'-eng').textContent=agg.tE;
   document.getElementById(prefix+'-rate').textContent=agg.tR!==null?agg.tR+'%':'—';
-  let html='';
-  agg.ch.forEach((c,i)=>{
+  document.getElementById(prefix+'-agg-body').innerHTML=agg.ch.map((c,i)=>{
     const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
     const days=showDays?records.filter(r=>mapChFromRec(r)[i].masuk>0).length:null;
-    html+=`<tr><td><div class="ch-label"><div class="ch-dot" style="background:${ch.color}"></div><div><div class="ch-name">${ch.name}</div><div class="ch-type">${ch.type}</div></div></div></td><td>${c.masuk}</td><td>${c.engaged}</td><td>${Math.max(0,c.masuk-c.engaged)}</td><td><span class="rate-badge ${rc(rate)}">${rate!==null?rate+'%':'—'}</span></td>${showDays?`<td>${days!==null?days+' hari':'—'}</td>`:''}</tr>`;
-  });
-  const tMiss=Math.max(0,agg.tM-agg.tE);
-  html+=`<tr><td><strong>JUMLAH</strong></td><td><strong>${agg.tM}</strong></td><td><strong>${agg.tE}</strong></td><td><strong>${tMiss}</strong></td><td><span class="rate-badge ${rc(agg.tR)}">${agg.tR!==null?agg.tR+'%':'—'}</span></td>${showDays?'<td>—</td>':''}</tr>`;
-  document.getElementById(prefix+'-agg-body').innerHTML=html;
-}
-function rateStyle(r){
-  if(r===null)return'background:#f0f2f5;color:#8a97b0';
-  if(r>=90)return'background:#e6f7ee;color:#1a7a4a';
-  if(r>=70)return'background:#fdf3e0;color:#b07800';
-  return'background:#fdecea;color:#c0392b';
-}
-function buildPDFChTable(rows){
-  const td='padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:center;font-size:11px;color:#1a2540';
-  const tdL='padding:8px 10px;border-bottom:1px solid #edf0f7;text-align:left;font-size:11px;color:#1a2540';
-  let html='';
-  rows.forEach((r,i)=>{
-    const ch=CH[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
-    html+=`<tr>
-      <td style="${tdL}"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${ch.color};margin-right:6px;vertical-align:middle"></span><strong>${ch.name}</strong><br><span style="color:#8a97b0;font-size:10px">${ch.type}</span></td>
-      <td style="${td}">${r.masuk}</td>
-      <td style="${td}">${r.engaged}</td>
-      <td style="${td}">${Math.max(0,r.masuk-r.engaged)}</td>
-      <td style="${td}"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;${rateStyle(rate)}">${rate!==null?rate+'%':'—'}</span></td>
-    </tr>`;
-  });
-  const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0),tR=tM>0?Math.round(tE/tM*100):null;
-  const tdT='padding:8px 10px;text-align:center;font-size:11px;font-weight:700;background:#f0f4ff;border-top:2px solid #2557a7;color:#0f1f3d';
-  const tdTL='padding:8px 10px;text-align:left;font-size:11px;font-weight:700;background:#f0f4ff;border-top:2px solid #2557a7;color:#0f1f3d';
-  html+=`<tr>
-    <td style="${tdTL}">JUMLAH KESELURUHAN</td>
-    <td style="${tdT}">${tM}</td>
-    <td style="${tdT}">${tE}</td>
-    <td style="${tdT}">${Math.max(0,tM-tE)}</td>
-    <td style="${tdT}"><span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600;${rateStyle(tR)}">${tR!==null?tR+'%':'—'}</span></td>
-  </tr>`;
-  document.getElementById('po-ch-body').innerHTML=html;
-}
-function runPDF(filename){}
-
-
-// ── STAFF FILTER ──
-let allStaffNames = [];
-
-function getStaffFilter(prefix){
-  const search = (document.getElementById(prefix+'-staff-search')||{}).value||'';
-  const select = (document.getElementById(prefix+'-staff-select')||{}).value||'';
-  // select takes priority if set, else use search text
-  return select || search.trim().toLowerCase();
+    return`<tr><td><div class="ch-label"><div class="ch-dot" style="background:${ch.color}"></div><div><div class="ch-name">${ch.name}</div><div class="ch-type">${ch.type}</div></div></div></td><td>${c.masuk}</td><td>${c.engaged}</td><td>${Math.max(0,c.masuk-c.engaged)}</td><td><span class="rate-badge ${rc(rate)}">${rate!==null?rate+'%':'—'}</span></td>${showDays?`<td>${days} hari</td>`:''}</tr>`;
+  }).join('')+`<tr><td><strong>JUMLAH</strong></td><td><strong>${agg.tM}</strong></td><td><strong>${agg.tE}</strong></td><td><strong>${Math.max(0,agg.tM-agg.tE)}</strong></td><td><span class="rate-badge ${rc(agg.tR)}">${agg.tR!==null?agg.tR+'%':'—'}</span></td>${showDays?'<td>—</td>':''}</tr>`;
 }
 
-function filterByStaff(records, prefix){
-  const filter = getStaffFilter(prefix);
-  if(!filter) return records;
-  return records.filter(r => r.staff_name.toLowerCase().includes(filter));
-}
-
-function syncStaffFilter(prefix){
-  const sel = document.getElementById(prefix+'-staff-select');
-  const srch = document.getElementById(prefix+'-staff-search');
-  if(sel && srch) srch.value = sel.value;
-}
-
-async function loadStaffNames(){
-  try{
-    const records = await fetchRecords();
-    if(!records||!records.length) return;
-    const names = [...new Set(records.map(r=>r.staff_name).filter(Boolean))].sort();
-    allStaffNames = names;
-    ['w','m','h'].forEach(prefix=>{
-      const sel = document.getElementById(prefix+'-staff-select');
-      if(!sel) return;
-      const current = sel.value;
-      sel.innerHTML = '<option value="">— Semua Staf —</option>';
-      names.forEach(n=>{
-        const opt = document.createElement('option');
-        opt.value = n; opt.textContent = n;
-        if(n===current) opt.selected = true;
-        sel.appendChild(opt);
-      });
-    });
-  }catch(e){ console.log('loadStaffNames error:',e); }
-}
-
-
-
-// ── CSV HELPERS ──
+// ── FIX 4: CSV — use proper \n not literal newlines ──
+const CSV_HDR='Tarikh,Nama Staf,Shift,WA1 Masuk,WA1 Engaged,WA2 Masuk,WA2 Engaged,WA3 Masuk,WA3 Engaged,EM1 Masuk,EM1 Engaged,EM2 Masuk,EM2 Engaged,Jumlah Masuk,Jumlah Engaged,Engage Rate,Catatan';
 function makeCSVRow(r){
   const rows=mapChFromRec(r);
   const tM=rows.reduce((s,c)=>s+c.masuk,0),tE=rows.reduce((s,c)=>s+c.engaged,0);
   const rt=tM>0?Math.round(tE/tM*100)+'%':'—';
-  return`${r.report_date},"${r.staff_name}","${r.shift||''}",${r.wa1_masuk},${r.wa1_engaged},${r.wa2_masuk},${r.wa2_engaged},${r.wa3_masuk},${r.wa3_engaged},${r.em1_masuk},${r.em1_engaged},${r.em2_masuk},${r.em2_engaged},${tM},${tE},${rt},"${(r.notes||'').replace(/"/g,'""')}"`;
+  return [r.report_date,`"${r.staff_name}"`,`"${r.shift||''}"`,r.wa1_masuk,r.wa1_engaged,r.wa2_masuk,r.wa2_engaged,r.wa3_masuk,r.wa3_engaged,r.em1_masuk,r.em1_engaged,r.em2_masuk,r.em2_engaged,tM,tE,rt,`"${(r.notes||'').replace(/"/g,'""')}"`].join(',');
 }
-const CSV_HEADER='Tarikh,Nama Staf,Shift,WA1 Masuk,WA1 Engaged,WA2 Masuk,WA2 Engaged,WA3 Masuk,WA3 Engaged,EM1 Masuk,EM1 Engaged,EM2 Masuk,EM2 Engaged,Jumlah Masuk,Jumlah Engaged,Engage Rate,Catatan';
-
-function downloadCSV(rows, filename){
-  if(!rows||!rows.length){toast('⚠️ Tiada data untuk export');return;}
-  const csv='﻿'+CSV_HEADER+'
-'+rows.map(makeCSVRow).join('
-');
+function downloadCSV(rows,filename){
+  if(!rows||!rows.length){toast('⚠️ Tiada data');return;}
+  const csv='\uFEFF'+CSV_HDR+'\n'+rows.map(makeCSVRow).join('\n');
   const a=document.createElement('a');
   a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
   a.download=filename;a.click();
-  toast('📥 CSV berjaya dieksport: '+filename);
+  toast('📥 CSV dieksport: '+filename);
 }
-
-// ── DAILY SAVE ONLY ──
-async function dSaveOnly(){
-  const name=document.getElementById('d-name').value.trim();
-  const dateVal=document.getElementById('d-date').value;
-  if(!name){toast('⚠️ Sila isi nama staf');return;}
-  if(!dateVal){toast('⚠️ Sila pilih tarikh');return;}
-  const rows=dGetRows();
-  const rec={
-    report_date:dateVal,staff_name:name,shift:document.getElementById('d-shift').value,
-    notes:document.getElementById('d-notes').value.trim()||null,
-    wa1_masuk:rows[0].masuk,wa1_engaged:rows[0].engaged,
-    wa2_masuk:rows[1].masuk,wa2_engaged:rows[1].engaged,
-    wa3_masuk:rows[2].masuk,wa3_engaged:rows[2].engaged,
-    em1_masuk:rows[3].masuk,em1_engaged:rows[3].engaged,
-    em2_masuk:rows[4].masuk,em2_engaged:rows[4].engaged,
-  };
-  const btn=document.getElementById('btn-save');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> Menyimpan...';
+async function exportCSV(){
   try{
-    await insertRecord(rec);
-    toast('💾 Rekod berjaya disimpan!');
-  }catch(e){
-    toast('❌ Gagal simpan: '+e.message);
-  }finally{
-    btn.disabled=false;btn.innerHTML='💾 Simpan';
-  }
+    const records=await fetchRecords();
+    if(!records||!records.length){toast('⚠️ Tiada data');return;}
+    downloadCSV(records,'CS-Records-All.csv');
+  }catch(e){toast('❌ '+e.message);}
 }
-
-// ── WEEKLY CSV ──
 async function wCSV(){
   const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
-  if(!from||!to){toast('⚠️ Pilih tarikh minggu dulu');return;}
-  let records=await fetchRecords(from,to);
-  records=filterByStaff(records,'w');
-  const staff=getStaffFilter('w');
-  const suffix=staff?`-${staff.replace(/\s+/g,'_')}`:'';
-  downloadCSV(records,`CS-Weekly-${from}-${to}${suffix}.csv`);
+  if(!from||!to){toast('⚠️ Pilih tarikh dulu');return;}
+  try{
+    let r=await fetchRecords(from,to);r=filterByStaff(r,'w');
+    const s=getStaffFilter('w');
+    downloadCSV(r,`CS-Weekly-${from}-${to}${s?'-'+s.replace(/\s+/g,'_'):''}.csv`);
+  }catch(e){toast('❌ '+e.message);}
 }
-
-// ── MONTHLY CSV ──
 async function mCSV(){
   const month=document.getElementById('m-month').value;
   if(!month){toast('⚠️ Pilih bulan dulu');return;}
   const[yr,mo]=month.split('-');
   const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
-  let records=await fetchRecords(from,to);
-  records=filterByStaff(records,'m');
-  const staff=getStaffFilter('m');
-  const suffix=staff?`-${staff.replace(/\s+/g,'_')}`:'';
-  downloadCSV(records,`CS-Monthly-${month}${suffix}.csv`);
+  try{
+    let r=await fetchRecords(from,to);r=filterByStaff(r,'m');
+    const s=getStaffFilter('m');
+    downloadCSV(r,`CS-Monthly-${month}${s?'-'+s.replace(/\s+/g,'_'):''}.csv`);
+  }catch(e){toast('❌ '+e.message);}
 }
 
-
-dRecalc();
-
-// ── WHATSAPP FORMAT ──
-let waText = '';
-
-function rateEmoji(r){ if(r===null)return'⚪'; if(r>=90)return'🟢'; if(r>=70)return'🟡'; return'🔴'; }
+// ── WHATSAPP ──
+let waText='';
+function rateEmoji(r){if(r===null)return'⚪';if(r>=90)return'🟢';if(r>=70)return'🟡';return'🔴';}
 
 function buildWADaily(){
   const name=document.getElementById('d-name').value.trim()||'—';
@@ -1035,63 +773,39 @@ function buildWADaily(){
   const rows=dGetRows();
   const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
   const tR=tM>0?Math.round(tE/tM*100):null;
-  const dateStr=dateVal?fmtDate(dateVal):'—';
-  let txt='';
-  txt+='📊 *LAPORAN HARIAN CS*\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  txt+=`📅 *Tarikh:* ${dateStr}\n`;
-  txt+=`👤 *Staf:* ${name}\n`;
-  txt+=`🕐 *Shift:* ${shift.split('(')[0].trim()}\n`;
-  txt+='\n';
-  txt+='📬 *PERTANYAAN MASUK*\n';
-  txt+='─────────────────────\n';
+  let t='📊 *LAPORAN HARIAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  t+=`📅 *Tarikh:* ${dateVal?fmtDate(dateVal):'—'}\n`;
+  t+=`👤 *Staf:* ${name}\n🕐 *Shift:* ${shift.split('(')[0].trim()}\n\n`;
+  t+='📬 *PERTANYAAN MASUK*\n─────────────────────\n';
   rows.forEach((r,i)=>{
-    const ch=CH[i];const rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
-    const icon=['📱','📱','📱','✉️','✉️'][i];
-    txt+=`${icon} *${ch.name}* (${ch.type})\n`;
-    txt+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+    const ch=CH[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
+    t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}* (${ch.type})\n`;
+    t+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  txt+='\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  txt+=`📥 *Jumlah Masuk:* ${tM}\n`;
-  txt+=`✅ *Berjaya Engage:* ${tE}\n`;
-  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
-  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
-  txt+='\n';
-  txt+='_[NAMA NGO] — Customer Service_';
-  return txt;
+  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${tM}\n✅ *Berjaya Engage:* ${tE}\n${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
+  t+='\n_[NAMA NGO] — Customer Service_';
+  return t;
 }
 
 async function buildWAWeekly(){
   const from=document.getElementById('w-from').value,to=document.getElementById('w-to').value;
   if(!from||!to){toast('⚠️ Pilih tarikh minggu dulu');return null;}
   const records=await fetchRecords(from,to);
-  if(!records||!records.length){toast('⚠️ Tiada data untuk tempoh ini');return null;}
+  if(!records||!records.length){toast('⚠️ Tiada data');return null;}
   const agg=calcAgg(records);
-  let txt='';
-  txt+='📊 *LAPORAN MINGGUAN CS*\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  txt+=`📅 *Tempoh:* ${fmtDate(from)} – ${fmtDate(to)}\n`;
-  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
-  txt+='\n';
-  txt+='📬 *AGGREGAT PER SALURAN*\n';
-  txt+='─────────────────────\n';
+  let t='📊 *LAPORAN MINGGUAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  t+=`📅 *Tempoh:* ${fmtDate(from)} – ${fmtDate(to)}\n📆 *Hari Ada Data:* ${records.length} hari\n\n`;
+  t+='📬 *AGGREGAT PER SALURAN*\n─────────────────────\n';
   agg.ch.forEach((c,i)=>{
-    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
-    const icon=['📱','📱','📱','✉️','✉️'][i];
-    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+    const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  txt+='\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  const tR=agg.tR;
-  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
-  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
-  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('w-notes').value.trim();
-  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
-  txt+='\n';
-  txt+='_[NAMA NGO] — Customer Service_';
-  return txt;
+  if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
+  t+='\n_[NAMA NGO] — Customer Service_';
+  return t;
 }
 
 async function buildWAMonthly(){
@@ -1100,55 +814,37 @@ async function buildWAMonthly(){
   const[yr,mo]=month.split('-');
   const from=`${yr}-${mo}-01`,lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate(),to=`${yr}-${mo}-${String(lastDay).padStart(2,'0')}`;
   const records=await fetchRecords(from,to);
-  if(!records||!records.length){toast('⚠️ Tiada data untuk bulan ini');return null;}
+  if(!records||!records.length){toast('⚠️ Tiada data');return null;}
   const agg=calcAgg(records);
   const monthName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('ms-MY',{month:'long',year:'numeric'});
-  let txt='';
-  txt+='📊 *LAPORAN BULANAN CS*\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  txt+=`📅 *Bulan:* ${monthName}\n`;
-  txt+=`📆 *Hari Ada Data:* ${records.length} hari\n`;
-  txt+='\n';
-  txt+='📬 *AGGREGAT PER SALURAN*\n';
-  txt+='─────────────────────\n';
+  let t='📊 *LAPORAN BULANAN CS*\n━━━━━━━━━━━━━━━━━━━━\n';
+  t+=`📅 *Bulan:* ${monthName}\n📆 *Hari Ada Data:* ${records.length} hari\n\n`;
+  t+='📬 *AGGREGAT PER SALURAN*\n─────────────────────\n';
   agg.ch.forEach((c,i)=>{
-    const ch=CH[i];const rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
-    const icon=['📱','📱','📱','✉️','✉️'][i];
-    txt+=`${icon} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
+    const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
+    t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  txt+='\n';
-  txt+='━━━━━━━━━━━━━━━━━━━━\n';
-  const tR=agg.tR;
-  txt+=`📥 *Jumlah Masuk:* ${agg.tM}\n`;
-  txt+=`✅ *Berjaya Engage:* ${agg.tE}\n`;
-  txt+=`${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  t+=`\n━━━━━━━━━━━━━━━━━━━━\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('m-notes').value.trim();
-  if(notes){txt+='\n';txt+='📝 *Catatan:*\n';txt+=notes+'\n';}
-  txt+='\n';
-  txt+='_[NAMA NGO] — Customer Service_';
-  return txt;
+  if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
+  t+='\n_[NAMA NGO] — Customer Service_';
+  return t;
 }
 
 async function showWA(type){
   const modal=document.getElementById('wa-modal');
-  const sub=document.getElementById('wa-subtitle');
   const preview=document.getElementById('wa-preview');
+  document.getElementById('wa-subtitle').textContent=type==='daily'?'Laporan Harian':type==='weekly'?'Laporan Mingguan':'Laporan Bulanan';
   modal.style.display='flex';
   preview.textContent='⏳ Menyediakan teks...';
   let txt=null;
-  if(type==='daily'){sub.textContent='Laporan Harian';txt=buildWADaily();}
-  else if(type==='weekly'){sub.textContent='Laporan Mingguan';txt=await buildWAWeekly();}
-  else if(type==='monthly'){sub.textContent='Laporan Bulanan';txt=await buildWAMonthly();}
+  if(type==='daily') txt=buildWADaily();
+  else if(type==='weekly') txt=await buildWAWeekly();
+  else if(type==='monthly') txt=await buildWAMonthly();
   if(!txt){modal.style.display='none';return;}
-  waText=txt;
-  preview.textContent=txt;
+  waText=txt;preview.textContent=txt;
 }
-
-function closeWA(){
-  document.getElementById('wa-modal').style.display='none';
-  waText='';
-}
-
+function closeWA(){document.getElementById('wa-modal').style.display='none';waText='';}
 function copyWA(){
   if(!waText)return;
   navigator.clipboard.writeText(waText).then(()=>{
@@ -1159,16 +855,12 @@ function copyWA(){
   }).catch(()=>{
     const ta=document.createElement('textarea');ta.value=waText;
     document.body.appendChild(ta);ta.select();document.execCommand('copy');
-    document.body.removeChild(ta);
-    toast('✅ Teks WhatsApp disalin!');
+    document.body.removeChild(ta);toast('✅ Disalin!');
   });
 }
+document.getElementById('wa-modal').addEventListener('click',function(e){if(e.target===this)closeWA();});
 
-document.getElementById('wa-modal').addEventListener('click',function(e){
-  if(e.target===this)closeWA();
-});
-
-
+dRecalc();
 </script>
 </body>
 </html>
