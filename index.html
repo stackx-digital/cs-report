@@ -40,7 +40,7 @@ label{font-size:10px;font-weight:600;color:var(--text-secondary);text-transform:
 input[type=text],input[type=date],input[type=password],input[type=url],select,textarea{padding:8px 11px;border:1.5px solid var(--border);border-radius:8px;font-family:'Roboto',sans-serif;font-size:14px;color:var(--text);background:#fff;transition:border-color .2s,box-shadow .2s;outline:none;width:100%}
 input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,87,167,.1)}
 textarea{resize:vertical;min-height:70px;line-height:1.5}
-.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}@media(max-width:480px){.summary-row{grid-template-columns:1fr 1fr;}.summary-row .summary-box:last-child{grid-column:1/-1;}}
+.summary-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}@media(max-width:480px){.summary-row{grid-template-columns:1fr 1fr!important;}.summary-row .summary-box:last-child{grid-column:auto;}}
 .summary-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center;box-shadow:var(--shadow)}
 .summary-num{font-family:'Roboto',sans-serif;font-weight:600;font-size:30px;color:var(--navy);line-height:1}
 .summary-num.green{color:var(--green)}.summary-num.amber{color:var(--accent)}
@@ -126,10 +126,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 <div class="panel active" id="panel-daily">
   <div class="page-title">Laporan Harian</div>
   <p class="page-sub">Isi data hari ini dan simpan ke sistem.</p>
-  <div class="summary-row">
+  <div class="summary-row" style="grid-template-columns:1fr 1fr 1fr 1fr">
     <div class="summary-box"><div class="summary-num" id="d-tot">0</div><div class="summary-label">Jumlah Masuk</div></div>
     <div class="summary-box"><div class="summary-num green" id="d-eng">0</div><div class="summary-label">Berjaya Engage</div></div>
     <div class="summary-box"><div class="summary-num amber" id="d-rate">—</div><div class="summary-label">Engage Rate</div></div>
+    <div class="summary-box" id="d-miss-box"><div class="summary-num" id="d-miss" style="color:var(--red)">0</div><div class="summary-label" style="color:var(--red)">Tidak Engage</div></div>
+  </div>
+  <div id="d-miss-alert" style="display:none;background:var(--red-light);border:1px solid #f5a5a0;border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:14px">
+    ⚠️ <strong id="d-miss-alert-text"></strong> — perlu di-engage esok sebelum jam 11 pagi.
   </div>
   <div class="card">
     <div class="card-header"><div class="card-icon" style="background:#eef2ff">🗂️</div><div class="card-title">Maklumat Laporan</div></div>
@@ -530,11 +534,27 @@ function dRecalc(){
   const rows=dGetRows();
   const tM=rows.reduce((s,r)=>s+r.masuk,0),tE=rows.reduce((s,r)=>s+r.engaged,0);
   const tR=tM>0?Math.round(tE/tM*100):null;
+  const tMiss=Math.max(0,tM-tE);
   document.getElementById('d-tot').textContent=tM;
   document.getElementById('d-eng').textContent=tE;
   document.getElementById('d-rate').textContent=tR!==null?tR+'%':'—';
   document.getElementById('d-totM').textContent=tM;
   document.getElementById('d-totE').textContent=tE;
+  // Tidak engage box
+  const missEl=document.getElementById('d-miss');
+  const missBox=document.getElementById('d-miss-box');
+  const missAlert=document.getElementById('d-miss-alert');
+  const missAlertTxt=document.getElementById('d-miss-alert-text');
+  if(missEl) missEl.textContent=tMiss;
+  if(missBox) missBox.style.border=tMiss>0?'2px solid var(--red)':'1px solid var(--border)';
+  if(missAlert){
+    if(tMiss>0){
+      missAlert.style.display='block';
+      missAlertTxt.textContent=tMiss+' leads belum di-engage';
+    } else {
+      missAlert.style.display='none';
+    }
+  }
   const tr=document.getElementById('d-totR');tr.textContent=tR!==null?tR+'%':'—';tr.className='rate-badge '+rc(tR);
   Array.from(document.querySelectorAll('#d-tbody tr[data-ch]')).forEach((row,i)=>{
     const r=rows[i],rate=r.masuk>0?Math.round(r.engaged/r.masuk*100):null;
@@ -839,9 +859,12 @@ function buildWADaily(){
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}* (${ch.type})\n`;
     t+=`   Masuk: ${r.masuk}  |  Engage: ${r.engaged}  |  ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${tM}\n✅ *Berjaya Engage:* ${tE}\n${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
+  const tMiss=Math.max(0,tM-tE);
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${tM}\n✅ *Berjaya Engage:* ${tE}\n❌ *Tidak Di-engage:* ${tMiss}\n${rateEmoji(tR)} *Engage Rate:* ${tR!==null?tR+'%':'—'}\n`;
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
-  t+='\n_IhsanKu — Customer Service_';
+  t+='\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
+  t+='📌 *Nota:* Leads yang belum di-engage hari ini perlu di-engage esok sebelum jam 11 pagi.';
+  t+='\n\n_IhsanKu — Customer Service_';
   return t;
 }
 
@@ -858,10 +881,13 @@ async function buildWAWeekly(){
     const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
+  const aggMiss=Math.max(0,agg.tM-agg.tE);
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n❌ *Tidak Di-engage:* ${aggMiss}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('w-notes').value.trim();
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
-  t+='\n_IhsanKu — Customer Service_';
+  t+='\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
+  t+='📌 *Nota:* Leads yang belum di-engage hari ini perlu di-engage esok sebelum jam 11 pagi.';
+  t+='\n\n_IhsanKu — Customer Service_';
   return t;
 }
 
@@ -881,10 +907,13 @@ async function buildWAMonthly(){
     const ch=CH[i],rate=c.masuk>0?Math.round(c.engaged/c.masuk*100):null;
     t+=`${'📱📱📱✉️✉️'[i*2]}${'📱📱📱✉️✉️'[i*2+1]} *${ch.name}:* ${c.masuk} masuk | ${c.engaged} engage | ${rateEmoji(rate)} ${rate!==null?rate+'%':'—'}\n`;
   });
-  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
+  const aggMiss=Math.max(0,agg.tM-agg.tE);
+  t+=`\n\n┄┄┄┄┄┄┄┄┄┄\n\n📥 *Jumlah Masuk:* ${agg.tM}\n✅ *Berjaya Engage:* ${agg.tE}\n❌ *Tidak Di-engage:* ${aggMiss}\n${rateEmoji(agg.tR)} *Engage Rate:* ${agg.tR!==null?agg.tR+'%':'—'}\n`;
   const notes=document.getElementById('m-notes').value.trim();
   if(notes) t+=`\n📝 *Catatan:*\n${notes}\n`;
-  t+='\n_IhsanKu — Customer Service_';
+  t+='\n\n┄┄┄┄┄┄┄┄┄┄\n\n';
+  t+='📌 *Nota:* Leads yang belum di-engage hari ini perlu di-engage esok sebelum jam 11 pagi.';
+  t+='\n\n_IhsanKu — Customer Service_';
   return t;
 }
 
