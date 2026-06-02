@@ -346,25 +346,37 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   <div class="page-title">Setup Supabase</div>
   <p class="page-sub">Sambungkan webapp ke database Supabase supaya semua staf kongsi data yang sama.</p>
 
-  <div class="warn-box">⚠️ <strong>Lakukan setup ini sekali sahaja</strong> oleh admin/pengurus. Selepas disimpan, semua staf boleh guna tanpa setup semula.</div>
+  <div style="background:#e6f7ee;border:1px solid #a3d9b1;border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:20px">✅</span>
+    <div>
+      <div style="font-weight:600;color:#1a7a4a;font-size:14px">Supabase Tersambung</div>
+      <div style="font-size:12px;color:#2d8a50;margin-top:2px">Database dikonfigurasi terus dalam sistem. Semua device boleh guna tanpa setup tambahan.</div>
+    </div>
+  </div>
 
   <div class="card">
-    <div class="card-header"><div class="card-icon" style="background:#eef2ff">🔑</div><div class="card-title">Masukkan Credentials Supabase</div></div>
+    <div class="card-header"><div class="card-icon" style="background:#eef2ff">🔑</div><div class="card-title">Info Sambungan</div></div>
     <div class="card-body">
-      <div class="field-group" style="margin-bottom:10px">
-        <label>Supabase URL</label>
-        <input type="url" id="cfg-url" placeholder="https://xxxxxxxxxxxx.supabase.co">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:10px;align-items:center">
+          <span style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;width:80px">URL</span>
+          <span style="font-size:13px;color:var(--text);font-family:'DM Mono',monospace;background:#f0f2f5;padding:4px 10px;border-radius:6px">https://slrlxpzruetnpfhwmwdz.supabase.co</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span style="font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.06em;width:80px">Key</span>
+          <span style="font-size:13px;color:var(--text-muted);font-family:'DM Mono',monospace;background:#f0f2f5;padding:4px 10px;border-radius:6px">eyJ••••••••••••••••••••••</span>
+        </div>
       </div>
-      <div class="field-group" style="margin-bottom:10px">
-        <label>Supabase Anon Key</label>
-        <input type="password" id="cfg-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="saveConfig()">💾 Simpan & Test Sambungan</button>
-        <button class="btn btn-secondary" onclick="clearConfig()">🗑️ Padam Config</button>
+      <div style="margin-top:12px">
+        <button class="btn btn-secondary" style="font-size:12px" onclick="checkConn()">🔄 Test Sambungan</button>
       </div>
       <div id="test-result" style="margin-top:10px;font-size:13px;display:none"></div>
     </div>
+  </div>
+
+  <div style="display:none">
+    <input type="url" id="cfg-url">
+    <input type="password" id="cfg-key">
   </div>
 
   <div class="card">
@@ -493,7 +505,9 @@ const CH=[
 ];
 
 // ── CONFIG ──
-function getCfg(){return{url:localStorage.getItem('sb_url')||'',key:localStorage.getItem('sb_key')||''};}
+const SB_URL='https://slrlxpzruetnpfhwmwdz.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNscmx4cHpydWV0bnBmaHdtd2R6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAzNjgzODEsImV4cCI6MjA5NTk0NDM4MX0.IzVJT5VZ3ChwBQwiBGE0tKZVmgejwzDW8DgCRhKJuz0';
+function getCfg(){return{url:SB_URL,key:SB_KEY};}
 function saveCfg(url,key){localStorage.setItem('sb_url',url);localStorage.setItem('sb_key',key);}
 
 // ── SUPABASE API ──
@@ -526,14 +540,15 @@ async function deleteRecord(id){
 // ── CONNECTION CHECK ──
 async function checkConn(){
   const badge=document.getElementById('conn-badge');
-  const{url,key}=getCfg();
-  if(!url||!key){badge.className='conn-badge conn-err';badge.textContent='⚠️ Belum setup';return;}
+  const res=document.getElementById('test-result');
   badge.className='conn-badge conn-loading';badge.textContent='⏳ Connecting...';
   try{
     await sbFetch('cs_daily_reports?limit=1');
     badge.className='conn-badge conn-ok';badge.textContent='✅ Connected';
+    if(res){res.style.display='block';res.innerHTML='✅ <strong>Berjaya!</strong> Sambungan ke Supabase OK.';res.style.color='var(--green)';}
   }catch(e){
     badge.className='conn-badge conn-err';badge.textContent='❌ Gagal';
+    if(res){res.style.display='block';res.innerHTML='❌ <strong>Gagal:</strong> '+e.message;res.style.color='var(--red)';}
   }
 }
 
@@ -565,34 +580,8 @@ function switchTab(name,btn){
 }
 
 // ── SETUP ──
-async function saveConfig(){
-  const url=document.getElementById('cfg-url').value.trim().replace(/\/$/,'');
-  const key=document.getElementById('cfg-key').value.trim();
-  if(!url||!key){toast('⚠️ Isi kedua-dua URL dan Key');return;}
-  saveCfg(url,key);
-  const res=document.getElementById('test-result');
-  res.style.display='block';res.innerHTML='<span class="spinner" style="border-top-color:var(--blue);border-color:var(--border)"></span> Testing...';
-  try{
-    await sbFetch('cs_daily_reports?limit=1');
-    res.innerHTML='✅ <strong>Berjaya!</strong> Sambungan ke Supabase OK.';res.style.color='var(--green)';
-    document.getElementById('conn-badge').className='conn-badge conn-ok';
-    document.getElementById('conn-badge').textContent='✅ Connected';
-    toast('✅ Config disimpan & sambungan berjaya!');
-  }catch(e){
-    res.innerHTML='❌ <strong>Gagal:</strong> '+e.message;res.style.color='var(--red)';
-    document.getElementById('conn-badge').className='conn-badge conn-err';
-    document.getElementById('conn-badge').textContent='❌ Gagal';
-  }
-}
-function clearConfig(){
-  if(!confirm('Padam config Supabase?'))return;
-  localStorage.removeItem('sb_url');localStorage.removeItem('sb_key');
-  document.getElementById('cfg-url').value='';document.getElementById('cfg-key').value='';
-  document.getElementById('test-result').style.display='none';
-  document.getElementById('conn-badge').className='conn-badge conn-err';
-  document.getElementById('conn-badge').textContent='⚠️ Belum setup';
-  toast('🗑️ Config dipadam');
-}
+function saveConfig(){}
+function clearConfig(){}
 function copySQL(){
   navigator.clipboard.writeText(document.getElementById('sql-block').textContent);
   toast('📋 SQL disalin!');
