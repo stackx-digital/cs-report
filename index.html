@@ -217,10 +217,16 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group"><label>Cari Nama</label><input type="text" id="w-staff-search" placeholder="Taip nama staf..." oninput="wLoad()"></div>
         <div class="field-group"><label>Pilih Staf</label>
-          <select id="w-staff-select" onchange="syncStaffFilter('w');wLoad()"><option value="">— Semua Staf —</option></select>
+          <select id="w-staff-select" onchange="selectStaff('w')"><option value="">— Semua Staf —</option></select>
         </div>
+        <div class="field-group"><label>Atau Taip Nama</label>
+          <input type="text" id="w-staff-search" placeholder="Taip nama staf..." oninput="searchStaff('w')">
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px" onclick="clearStaffFilter('w')">✕ Papar Semua Staf</button>
+        <span id="w-filter-label" style="font-size:12px;color:var(--text-secondary);margin-left:10px"></span>
       </div>
     </div>
   </div>
@@ -269,10 +275,16 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group"><label>Cari Nama</label><input type="text" id="m-staff-search" placeholder="Taip nama staf..." oninput="mLoad()"></div>
         <div class="field-group"><label>Pilih Staf</label>
-          <select id="m-staff-select" onchange="syncStaffFilter('m');mLoad()"><option value="">— Semua Staf —</option></select>
+          <select id="m-staff-select" onchange="selectStaff('m')"><option value="">— Semua Staf —</option></select>
         </div>
+        <div class="field-group"><label>Atau Taip Nama</label>
+          <input type="text" id="m-staff-search" placeholder="Taip nama staf..." oninput="searchStaff('m')">
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px" onclick="clearStaffFilter('m')">✕ Papar Semua Staf</button>
+        <span id="m-filter-label" style="font-size:12px;color:var(--text-secondary);margin-left:10px"></span>
       </div>
     </div>
   </div>
@@ -311,10 +323,16 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <div class="card-header"><div class="card-icon" style="background:#f5f3ff">👤</div><div class="card-title">Filter Staf</div></div>
     <div class="card-body">
       <div class="meta-grid">
-        <div class="field-group"><label>Cari Nama</label><input type="text" id="h-staff-search" placeholder="Taip nama staf..." oninput="renderHistory()"></div>
         <div class="field-group"><label>Pilih Staf</label>
-          <select id="h-staff-select" onchange="syncStaffFilter('h');renderHistory()"><option value="">— Semua Staf —</option></select>
+          <select id="h-staff-select" onchange="selectStaff('h')"><option value="">— Semua Staf —</option></select>
         </div>
+        <div class="field-group"><label>Atau Taip Nama</label>
+          <input type="text" id="h-staff-search" placeholder="Taip nama staf..." oninput="searchStaff('h')">
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <button class="btn btn-secondary" style="font-size:12px;padding:5px 12px" onclick="clearStaffFilter('h')">✕ Papar Semua Staf</button>
+        <span id="h-filter-label" style="font-size:12px;color:var(--text-secondary);margin-left:10px"></span>
       </div>
     </div>
   </div>
@@ -480,6 +498,8 @@ document.getElementById('m-month').value=today.toISOString().slice(0,7);
 
 // FIX 3: Run checkConn async on load
 checkConn();
+// Load staff names on startup for all dropdowns
+loadStaffNames();
 
 // ── HELPERS ──
 function rc(v){if(v===null)return'rn';if(v>=90)return'rh';if(v>=70)return'rm';return'rl';}
@@ -559,11 +579,46 @@ async function dSaveOnly(){
 function getStaffFilter(prefix){
   const sel=(document.getElementById(prefix+'-staff-select')||{}).value||'';
   const srch=(document.getElementById(prefix+'-staff-search')||{}).value||'';
-  return sel || srch.trim().toLowerCase();
+  return (sel||srch).trim().toLowerCase();
 }
 function filterByStaff(records,prefix){
   const f=getStaffFilter(prefix);
-  return f ? records.filter(r=>r.staff_name.toLowerCase().includes(f)) : records;
+  if(!f) return records;
+  return records.filter(r=>(r.staff_name||'').toLowerCase().includes(f));
+}
+function updateFilterLabel(prefix){
+  const f=getStaffFilter(prefix);
+  const el=document.getElementById(prefix+'-filter-label');
+  if(el) el.textContent=f?`Menapis: "${f}"`:'';
+}
+function selectStaff(prefix){
+  // When dropdown selected, clear search and reload
+  const sel=document.getElementById(prefix+'-staff-select');
+  const srch=document.getElementById(prefix+'-staff-search');
+  if(srch) srch.value=sel?sel.value:'';
+  updateFilterLabel(prefix);
+  if(prefix==='w') wLoad();
+  else if(prefix==='m') mLoad();
+  else if(prefix==='h') renderHistory();
+}
+function searchStaff(prefix){
+  // When typing in search, clear dropdown and reload
+  const sel=document.getElementById(prefix+'-staff-select');
+  if(sel) sel.value='';
+  updateFilterLabel(prefix);
+  if(prefix==='w') wLoad();
+  else if(prefix==='m') mLoad();
+  else if(prefix==='h') renderHistory();
+}
+function clearStaffFilter(prefix){
+  const sel=document.getElementById(prefix+'-staff-select');
+  const srch=document.getElementById(prefix+'-staff-search');
+  if(sel) sel.value='';
+  if(srch) srch.value='';
+  updateFilterLabel(prefix);
+  if(prefix==='w') wLoad();
+  else if(prefix==='m') mLoad();
+  else if(prefix==='h') renderHistory();
 }
 function syncStaffFilter(prefix){
   const sel=document.getElementById(prefix+'-staff-select');
